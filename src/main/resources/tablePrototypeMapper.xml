@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        
+<mapper namespace="com.mm.mybatis.TablePrototype" >
+
+    <select id="findByName" parameterType="java.lang.String" resultType="com.mm.mybatis.TablePrototype">
+		select * from  _table_prototype where _owner = #{name} order by _type asc
+    </select>
+    
+    <insert id="insert" parameterType="com.mm.mybatis.TablePrototype">
+       INSERT INTO _table_prototype (_type, _name, _name_cn, _data_type, _max_len, _owner, _html)
+       		 VALUES (#{_type}, #{_name}, #{_name_cn}, #{_data_type}, #{_max_len}, #{_owner}, #{_html})
+    </insert>
+    
+    <update id="update" parameterType="com.mm.mybatis.TablePrototype">
+       UPDATE _table_prototype t SET _name_cn = #{_name_cn}, _html = #{_html}  WHERE _id = #{id}
+    </update>
+    
+    <delete id="delete" parameterType="java.lang.String" >
+        DELETE FROM _table_prototype  WHERE _owner = #{name}
+    </delete>
+    
+</mapper>

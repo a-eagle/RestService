@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        
+<mapper namespace="com.mm.mybatis.Department" >
+
+	<resultMap id="Department-ResultMap" type="com.mm.mybatis.Department">
+        <id column="_id" jdbcType="INTEGER" property="id" />
+        <result column="_name" jdbcType="VARCHAR" property="name" />
+        <result column="_parent_id" jdbcType="INTEGER" property="parentId" />
+        <result column="_parent_name" jdbcType="VARCHAR" property="parentName" />
+        <result column="_type" jdbcType="INTEGER" property="type" />
+    </resultMap>
+
+    <select id="findById"  resultMap="Department-ResultMap">
+		select * from _department t where t._id = #{id}
+    </select>
+    
+    <select id="findAll"  resultMap="Department-ResultMap">
+		select * from _department
+    </select>
+    
+    <insert id="insert" parameterType="com.mm.mybatis.Department">
+       INSERT INTO _department (_name, _parent, _type) VALUES (#{name}, #{parent}, #{type})
+    </insert>
+    
+    <update id="update" parameterType="com.mm.mybatis.Department">
+       UPDATE _department t SET _parent_name = #{name} WHERE _parent_id = #{id} ;
+       UPDATE _department t SET _name = #{name}, _parent_id = #{parentId}, _parent_name = #{parentName} WHERE _id = #{id} 
+    </update>
+    
+    <delete id="delete" >
+        DELETE FROM _department  WHERE _id in 
+        <foreach item="id" collection="array" open="(" close=")" separator=",">
+        	#{id}
+        </foreach>
+    </delete>
+    
+</mapper>
