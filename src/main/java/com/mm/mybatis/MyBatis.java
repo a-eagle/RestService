@@ -59,7 +59,7 @@ public class MyBatis {
 				2		_birthday	出生日期		str			50			mzj_nhxx
 				2		_address	住址			str			250			mzj_nhxx
 			 */
-			c.createStatement().execute("create table _table_prototype (_id integer PRIMARY KEY auto_increment, _type integer, _name varchar(120),  _name_cn varchar(120),  _data_type char(4),  _max_len integer default 250,  _owner varchar(120), _html varchar(250) )");
+			c.createStatement().execute("create table _table_prototype (_id integer PRIMARY KEY auto_increment, _type integer, _name varchar(120),  _name_cn varchar(120),  _data_type char(4),  _max_len integer default 250,  _owner varchar(120), _html varchar(250), _dept_id  integer default 0)");
 			
 			// _name : system build unique file name
 			// _raw_name: raw file name

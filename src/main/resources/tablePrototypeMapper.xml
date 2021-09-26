@@ -7,9 +7,16 @@
 		select * from  _table_prototype where _owner = #{name} order by _type asc
     </select>
     
+    <select id="findByDeptId" parameterType="int" resultType="com.mm.mybatis.TablePrototype">
+		select * from  _table_prototype where  _type = 1
+			<if test="_parameter != 0">
+				and _dept_id = #{_parameter}
+			</if>
+    </select>
+    
     <insert id="insert" parameterType="com.mm.mybatis.TablePrototype">
-       INSERT INTO _table_prototype (_type, _name, _name_cn, _data_type, _max_len, _owner, _html)
-       		 VALUES (#{_type}, #{_name}, #{_name_cn}, #{_data_type}, #{_max_len}, #{_owner}, #{_html})
+       INSERT INTO _table_prototype (_type, _name, _name_cn, _data_type, _max_len, _owner, _html, _dept_id)
+       		 VALUES (#{_type}, #{_name}, #{_name_cn}, #{_data_type}, #{_max_len}, #{_owner}, #{_html}, #{_dept_id})
     </insert>
     
     <update id="update" parameterType="com.mm.mybatis.TablePrototype">
@@ -19,5 +26,19 @@
     <delete id="delete" parameterType="java.lang.String" >
         DELETE FROM _table_prototype  WHERE _owner = #{name}
     </delete>
+    
+    <insert id="createTableStructure" parameterType="com.mm.mybatis.TablePrototype">
+       create table  ${_name} (
+       	   _id integer PRIMARY KEY auto_increment
+       )
+    </insert>
+    
+    <insert id="addColumn" parameterType="com.mm.mybatis.TablePrototype">
+       alter table ${_owner} add column ${_name}
+       	  <choose>
+       	  	<when test = '_data_type == "str" ' > varchar(${_max_len})  </when>
+       	  	<when test = '_data_type == "lstr"' > TEXT(${_max_len})  </when>
+       	  </choose>
+    </insert>
     
 </mapper>

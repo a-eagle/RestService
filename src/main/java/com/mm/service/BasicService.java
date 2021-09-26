@@ -5,23 +5,23 @@ import java.util.List;
 public class BasicService {
 	
 	public static class ServiceResult {
-		public String code;  //  OK ,FAIL
+		public String status;  //  OK ,FAIL
 		public String msg;
 		public Object data;
 		public int count;
 		
 		public ServiceResult() {
-			code = "OK";
+			status = "OK";
 		}
 		
 		public ServiceResult(String code, String msg, Object data) {
-			this.code = code;
+			this.status = code;
 			this.msg = msg;
 			this.data = data;
 		}
 		
 		public void fail(String msg) {
-			this.code = "FAIL";
+			this.status = "FAIL";
 			this.msg = msg;
 		}
 		
