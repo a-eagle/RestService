@@ -24,7 +24,7 @@ public class TablePrototypeManager {
 	
 	public static Table findByName2(String tableName, SqlSession session) {
 		Table item = mTableMap.get(tableName);
-		if (item.protoList != null) {
+		if (item != null && item.protoList != null) {
 			return item;
 		}
 		List<TablePrototype> u = session.selectList("com.mm.mybatis.TablePrototype.findByName", tableName);
