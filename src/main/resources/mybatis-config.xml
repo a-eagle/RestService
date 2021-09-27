@@ -21,6 +21,7 @@
         <mapper resource="userMapper.xml"/>
         <mapper resource="departmentMapper.xml"/>
         <mapper resource="tablePrototypeMapper.xml"/>
+        <mapper resource="tableMapper.xml"/>
     </mappers>
  
 </configuration>

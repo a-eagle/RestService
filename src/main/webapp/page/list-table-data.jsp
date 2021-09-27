@@ -16,11 +16,8 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
   <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
    <script>
   
-  	var deptId = '<%=request.getParameter("deptId")%>';
-  	var deptName = '<%=request.getParameter("deptName")%>';
-  	var deptNameEncode = encodeURIComponent(deptName);
+  	var tableName = '<%=request.getParameter("name")%>';
   </script>
-  
    <style>
   
   body::-webkit-scrollbar {
@@ -29,8 +26,8 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
   
   </style>
 </head>
-<body >
-<div id="app" >
+<body style="width:100%; height:100%;">
+<div id="app" style="width:100%; height:100%;">
 <v-app>
   <!-- 根据应用组件来调整你的内容 -->
   <v-main>
@@ -46,9 +43,6 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
 		        mdi-delete
 		      </v-icon>
 		       -->
-		       <v-icon  class="mr-2" @click="listItemData(item)" >
-		        mdi-magnify
-		      </v-icon>
 		    </template>
         </v-data-table>
   </v-main>
@@ -70,12 +64,7 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
       el: '#app',
       vuetify: new Vuetify(),
       data : {
-    	  tableHeaders: [{text: '#', value:'idx' },
-    		  {text: 'ID', value:'_id' },  
-    		  {text: '表中文名', value:'_name_cn' },
-    		  {text: '表英文名(MD5)', value:'_name' },
-    		  {text: 'Actions', value:'actions' }
-    	  ],
+    	  tableHeaders: [{text: '#', value:'IDX' }],
     	  tableDatas: [],
     	  
     	  editDialogShow: false,
@@ -87,12 +76,18 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
       
       mounted: function() {
     	  var vm = this;
-    	  var url = '<%=request.getContextPath()%>/rest/tableprototype/table?dept-id=<%=request.getParameter("deptId")%>';
+    	  
+    	  var url = '<%=request.getContextPath()%>/rest/table/' + tableName + "?result-for=ui";
    		  axios.get(url).then(function (res) {
+   			  var headers = res.data.headers;
    			  var d = res.data.data;
-   			  //console.log(res);
+   			  console.log(res.data);
+   			  for (var i = 0; i < headers.length; ++i) {
+     			  vm.tableHeaders.push({text: headers[i].text, value: headers[i].name});
+     		  }
    			  for (var i = 0; i < d.length; ++i) {
-       			  vm.tableDatas.push({_id: d[i]._id, _name: d[i]._name, _name_cn: d[i]._name_cn, idx: i + 1});
+   				  d[i].IDX = i + 1;
+       			  vm.tableDatas.push(d[i]);
        		  }
        	  });
     	  
@@ -106,7 +101,7 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
     	  },
     	  
     	  editItem: function(item) {
-    		  // console.log(item);
+    		  console.log(item);
     		  this.resetEditDialog();
     		  this.editDialogShow = true;
     		  this.editDialog._name_cn = item._name_cn;
@@ -116,7 +111,7 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
         	  console.log(url);
        		  axios.get(url).then(function (res) {
        			  var d = res.data.data;
-       			  //console.log(res);
+       			  console.log(d);
        			  for (var i = 1; i < d.length; ++i) {
        				  d[i].idx = i;
            			  vm.editDialog.datas.push(d[i]);
@@ -127,12 +122,6 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
     	  deleteItem: function(item) {
     		  
     	  },
-    	  
-    	  listItemData: function(item) {
-    		  var frame = top.document.getElementById('main-right').contentWindow;
-    		  var u = 'list-table-data.jsp?name=' + item._name;
-    		  frame.vm.addTab({text: item._name_cn, url: u});
-    	  }
       },
     });
     

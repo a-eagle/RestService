@@ -20,9 +20,16 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
   	var deptName = '<%=request.getParameter("deptName")%>';
   	var deptNameEncode = encodeURIComponent(deptName);
   </script>
+  <style>
+  
+  body::-webkit-scrollbar {
+	  display: none; /* Chrome Safari */
+	}
+  
+  </style>
 </head>
-<body style=" overflow:hidden; ">
-<div id='app' style="overflow:hidden; margin:  0px 20px;" >
+<body >
+<div id='app' style=" margin:  0px 20px;" >
 <v-app style="overflow:hidden;" >
   <!-- 根据应用组件来调整你的内容 -->
   
@@ -43,7 +50,7 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
       <br/>
       <v-main>
 	      <v-tabs-items v-model="tab">
-	      	<v-tab-item v-for="item in tabsInfo" :key="item.id">
+	      	<v-tab-item v-for="item in tabsInfo" :key="item.url">
 	      		<v-card flat>
 	      			<iframe style="width:100%; height:600px; border:0; overflow: hidden; " :src='item.url'> </iframe>
 	      		</v-card>
@@ -60,13 +67,25 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
       vuetify: new Vuetify(),
       data : {
     	  tabsInfo : [
-    		  {id: 1, text: '所属表', url:'list-table.jsp?deptId=' + deptId }, 
-    		  {id: 0, text: '新建表', url:'add-table.jsp?deptId=' + deptId + '&deptName=' + deptNameEncode},
+    		  {text: '所属表', url:'list-table.jsp?deptId=' + deptId }, 
+    		  {text: '新建表', url:'add-table.jsp?deptId=' + deptId + '&deptName=' + deptNameEncode},
     		],
     	  tab: null,
       },
       
       methods : {
+    	  // item = {text:'', url:'' }
+    	  addTab: function(item) {
+    		  for (var i = 0; i < this.tabsInfo.length; ++i) {
+    			  if (this.tabsInfo[i].url == item.url) {
+    				  this.tab = i;
+    				  return;
+    			  }
+    		  }
+    		  
+    		  this.tabsInfo.push(item);
+    		  this.tab = this.tabsInfo.length - 1;
+    	  }
       },
     });
     

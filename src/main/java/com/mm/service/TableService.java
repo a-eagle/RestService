@@ -12,6 +12,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import org.apache.ibatis.session.SqlSession;
 
@@ -26,19 +27,30 @@ import com.mm.service.BasicService.ServiceResult;
 @Path("/table/{table-name}")
 public class TableService extends BasicService {
 	
+	public static class Results extends ServiceResult {
+		public List<TablePrototypeManager.Table.Header> headers;
+	}
+	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public ServiceResult findAll(@PathParam("table-name") String tabName) {
+	public Results findAll(@PathParam("table-name") String tabName, @QueryParam("result-for") String rfStr) {
 		SqlSession session = null;
-		ServiceResult r = new ServiceResult();
+		Results r = new Results();
 		try {
 			session  = MyBatis.getSession();
 			TablePrototypeManager.Table t = TablePrototypeManager.findByName2(tabName, session);
 			Map<String, String> param = new HashMap<String, String>();
 			param.put("tableName", t.tableName);
-			param.put("columns", t.queryColumns);
+			String dc = t.dataColumns;
+			r.headers = t.dataHeaders;
+			if ("ui".equals(rfStr)) {
+				dc = t.queryColumns;
+				r.headers = t.queryHeaders;
+			}
+			param.put("columns", dc);
 			List< java.util.Map<String, String> > u = session.selectList("com.mm.mybatis.Table.findAll", param);
 			r.setListData(u);
+			
 		} catch(Exception ex) {
 			ex.printStackTrace();
 			r.fail(ex.getMessage());
