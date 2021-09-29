@@ -7,8 +7,9 @@ public class BasicService {
 	public static class ServiceResult {
 		public String status;  //  OK ,FAIL
 		public String msg;
-		public Object data;
+		public Object headers;
 		public int count;
+		public Object data;
 		
 		public ServiceResult() {
 			status = "OK";

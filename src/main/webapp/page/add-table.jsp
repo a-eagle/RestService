@@ -55,12 +55,20 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
 </v-row>
 
 
-<v-row justify="space-around">
-	<v-col > <v-text-field v-model.trim = 'add._name_cn' >  </v-col>
-	<v-col > <v-text-field  v-model.trim = 'add._name' > </v-col>
-	<v-col > <v-text-field   v-model.trim = 'add._data_type' > </v-col>
-	<v-col > <v-text-field   v-model.trim = 'add._max_len' > </v-col>
+<v-row justify="space-around" style="border: solid 1px #ccc; background-color:#ddd; height: 60px;">
+	<v-col > <v-text-field v-model.trim = 'add._name_cn' required :counter="30" >  </v-col>
+	<v-col > <v-text-field  v-model.trim = 'add._name' required> </v-col>
+	<v-col > <v-text-field   v-model.trim = 'add._data_type' required> </v-col>
+	<v-col > <v-text-field   v-model.trim = 'add._max_len' required> </v-col>
 	<v-col cols="2"  md="1" @click="newColumnToServer">  <v-btn block> 创建列  </v-btn> </v-col>
+</v-row>
+<br/>
+<br/>
+<v-row justify="space-around" style="background-color:#ddddEE; height: 180px;">
+	<v-col cols="6"  > <v-textarea v-model.trim = 'mcols' label="多列名称" > </v-textarea> </v-col>
+	<v-col > <v-text-field  v-model.trim = 'mcols_split' label="分割符(Regex)" > </v-col>
+	<v-col cols="2"  md="1" @click="splitCols">  <v-btn block> 分割 </v-btn> </v-col>
+	<v-col cols="2"  md="1" @click="newMultiColumn">  <v-btn block> 创建多列 </v-btn> </v-col>
 </v-row>
 
 </v-app>
@@ -78,7 +86,10 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
     	  
     	  showAlert: false, alertType: 'success', alertText:'' , 
     	  
-    	  colNum : 0
+    	  colNum : 0,
+    	  
+    	  mcols: '',
+    	  mcols_split: '\\s+',
       },
       
       mounted: function() {
@@ -130,12 +141,17 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
     		  });
     	  },
     	  
-    	  newColumnToServer: function() {
+    	  newColumnToServer: function(cb) {
     		  param = {_name_cn: this.add._name_cn, _name: this.add._name, 
     				  _type: 2, _data_type: this.add._data_type, 
     				  _max_len: this.add._max_len, _owner: this.tabNameMD5};
     		  var vm = this
     		  var url = "<%=request.getContextPath()%>/rest/tableprototype";
+    		  
+    		  if (this.add._name_cn == '') {
+    			  return;
+    		  }
+    		  
     		  axios.post(url, [param]).then(function(res) {
     			  var d = res.data;
     			  if (d.status == 'OK') {
@@ -154,14 +170,35 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
     				  vm.alertText = 'Create Column Fail: ' + d.msg;
     				  vm.showAlert = true;
     			  }
+    			  if (cb) {
+    				  cb();
+    			  }
     		  }).catch(function (error) {
     			  vm.alertType = 'error';
     			  vm.alertText = 'Create Column Fail: ' + error;
     			  vm.showAlert = true;
     		  });
-    	  }
-      },
+    	  },
       
+	      splitCols: function() {
+	    	  var re = new RegExp(this.mcols_split);
+	    	  var lines = this.mcols.split(re);
+	    	  this.mcols = lines.join('\n');
+	      },
+	      
+	      newMultiColumn: function() {
+	    	  var vm = this;
+	    	  var lines = this.mcols.split('\n');
+	    	  if (lines.length == 0 || lines[0] == '') {
+	    		  return;
+	    	  }
+	    	  this.add._name_cn = lines[0];
+	    	  this.newColumnToServer(function() {
+	    		  lines.shift();
+	    		  vm.mcols = lines.join('\n');
+	    	  });
+	      },
+      },
       watch: {
       }
     });

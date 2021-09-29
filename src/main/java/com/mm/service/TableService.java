@@ -18,24 +18,27 @@ import org.apache.ibatis.session.SqlSession;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.mm.mybatis.MyBatis;
 import com.mm.mybatis.TablePrototype;
 import com.mm.mybatis.TablePrototypeManager;
 import com.mm.mybatis.User;
 import com.mm.service.BasicService.ServiceResult;
 
-@Path("/table/{table-name}")
+@Path("/api/{table-name}")
 public class TableService extends BasicService {
 	
-	public static class Results extends ServiceResult {
-		public List<TablePrototypeManager.Table.Header> headers;
+	public static class Data {
+		public String tableName;
+		public String colNames;
+		public List<String> colValues;
 	}
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Results findAll(@PathParam("table-name") String tabName, @QueryParam("result-for") String rfStr) {
+	public ServiceResult findAll(@PathParam("table-name") String tabName, @QueryParam("result-for") String rfStr) {
 		SqlSession session = null;
-		Results r = new Results();
+		ServiceResult r = new ServiceResult();
 		try {
 			session  = MyBatis.getSession();
 			TablePrototypeManager.Table t = TablePrototypeManager.findByName2(tabName, session);
@@ -85,6 +88,28 @@ public class TableService extends BasicService {
 		return sr;
 	}
 	
+	// remove columns not in prototype
+	protected void updateData(Data data, Map<String, String> map, SqlSession session) {
+		List<TablePrototype> columns = TablePrototypeManager.findByName(data.tableName, session);
+		
+		StringBuilder cols = new StringBuilder();
+		
+		for (TablePrototype p : columns) {
+			if (p._type != TablePrototype.TYPE_COLUMN) {
+				continue;
+			}
+			if (! map.containsKey(p._name)) {
+				continue;
+			}
+			if (cols.length() != 0) 
+				cols.append(",");
+			cols.append(p._name);
+			data.colValues.add(map.get(p._name));
+		}
+		
+		data.colNames = cols.toString();
+	}
+	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
@@ -94,8 +119,28 @@ public class TableService extends BasicService {
 		try {
 			session  = MyBatis.getSession();
 			ObjectMapper m = new ObjectMapper();
-			Map<String, String> data = m.readValue(json, Map.class);
-			int num = session.insert("com.mm.mybatis.Table.insert", data);
+			TypeFactory fac = m.getTypeFactory();
+			JavaType innerType = fac.constructParametricType(HashMap.class, String.class, String.class);
+			JavaType jt = fac.constructParametricType(ArrayList.class, innerType);
+			List<Map<String, String>> data = m.readValue(json, jt);
+			int num = 0;
+			
+			Data param = new Data();
+			param.tableName = tableName;
+			param.colValues = new ArrayList<String>();
+			
+			for (int i = 0; data!= null && i < data.size(); ++i) {
+				param.colValues.clear();
+				param.colNames = "";
+				updateData(param, data.get(i), session);
+				if (param.colValues.size() == 0) {
+					// no data, ignore
+					continue;
+				}
+				int numr = session.insert("com.mm.mybatis.Table.insert", param);
+				num += numr;
+			}
+			
 			session.commit();
 			sr.setSimpleData(num);
 		} catch(Exception ex) {

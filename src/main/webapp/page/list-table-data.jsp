@@ -77,7 +77,7 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
       mounted: function() {
     	  var vm = this;
     	  
-    	  var url = '<%=request.getContextPath()%>/rest/table/' + tableName + "?result-for=ui";
+    	  var url = '<%=request.getContextPath()%>/rest/api/' + tableName + "?result-for=ui";
    		  axios.get(url).then(function (res) {
    			  var headers = res.data.headers;
    			  var d = res.data.data;

@@ -11,8 +11,12 @@
 		SELECT * FROM ${tableName} where _id = #{id}
     </select>
     
-    <insert id="insert" parameterType="map">
-       
+    <insert id="insert" parameterType="com.mm.service.TableService$Data">
+       insert into ${tableName} ( ${colNames} ) values 
+        <foreach item="item" index="index" collection="colValues"
+	      open="(" separator="," close=")">
+	        #{item}
+  		</foreach>
     </insert>
     
 </mapper>

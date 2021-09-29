@@ -47,7 +47,11 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
 		      </v-icon>
 		       -->
 		       <v-icon  class="mr-2" @click="listItemData(item)" >
-		        mdi-magnify
+		        mdi-magnify  
+		      </v-icon>
+		      
+		      <v-icon  class="mr-2" @click="importItemData(item)" >
+		        mdi-import
 		      </v-icon>
 		    </template>
         </v-data-table>
@@ -132,6 +136,12 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
     		  var frame = top.document.getElementById('main-right').contentWindow;
     		  var u = 'list-table-data.jsp?name=' + item._name;
     		  frame.vm.addTab({text: item._name_cn, url: u});
+    	  },
+    	  
+    	  importItemData: function(item) {
+    		  var frame = top.document.getElementById('main-right').contentWindow;
+    		  var u = 'import-table-data.jsp?name=' + item._name;
+    		  frame.vm.addTab({text: item._name_cn + '[IN]', url: u});
     	  }
       },
     });
