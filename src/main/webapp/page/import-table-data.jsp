@@ -110,7 +110,10 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
    			  var headers = res.data.headers;
    			  var d = res.data.data;
    			  // console.log(d);
-   			 for (var i = 1; i < d.length; ++i) {
+   			 for (var i = 0; i < d.length; ++i) {
+   				 if (d[i]._type != 2) {
+   					 continue;
+   				 }
    				vm.tableHeaders.push({text: d[i]._name_cn, value: d[i]._name});
    				vm.tableHeadersProto.push(d[i]);
    				
@@ -148,7 +151,9 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
 			  var worksheet = workbook.Sheets[workbook.SheetNames[0]];
 			  console.log(worksheet);
 			  // remove !merges
-			  worksheet['!merges'].length = 0;
+			  if (worksheet['!merges']) {
+				  worksheet['!merges'].length = 0;  
+			  }
 			  // delete before table header rows
 			  this.headerLineNo = parseInt('' + this.headerLineNo);
 			  var range = worksheet['!ref'];

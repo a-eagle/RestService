@@ -50,7 +50,7 @@ public class TablePrototypeManager {
 			item.dataColumns = buildDataColumns(u);
 			item.queryHeaders = buildQueryHeaders(u);
 			item.dataHeaders = buildDataHeaders(u);
-			mTableMap.put(tableName, item);
+			// mTableMap.put(tableName, item);
 		}
 		return item;
 	}
@@ -64,7 +64,7 @@ public class TablePrototypeManager {
 	}
 	
 	public static void dirty(String tableName) {
-		mTableMap.remove(tableName);
+		// mTableMap.remove(tableName);
 	}
 	
 	

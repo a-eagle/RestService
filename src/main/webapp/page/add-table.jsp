@@ -34,7 +34,11 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
 	<v-col cols="2"  md="1"> <v-btn block @click="newTableToServer" > 创建表  </v-btn>  </v-col>
 </v-row>
 
-<v-alert v-model="showAlert" border="left" close-text="Close Alert" color="green" elevation = 4 text :type = "alertType"  dismissible >
+<v-alert v-model="showAlert" border="left" close-text="Close Alert" color="green" elevation = 4 text type = "success"  dismissible >
+	{{alertText}}
+</v-alert>
+
+<v-alert v-model="showErrAlert" border="left" close-text="Close Alert" elevation = 4 text type="error"  dismissible >
 	{{alertText}}
 </v-alert>
 
@@ -71,6 +75,10 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
 	<v-col cols="2"  md="1" @click="newMultiColumn">  <v-btn block> 创建多列 </v-btn> </v-col>
 </v-row>
 
+<v-row justify="space-around" style="background-color:#cccfcc; height: 60px;">
+	<v-col  @click="rest">  <v-btn block> 重置  </v-btn> </v-col>
+</v-row>
+
 </v-app>
 </div>
 <script>
@@ -80,11 +88,11 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
       data : {
     	  // for new table
     	  deptName: '<%=request.getParameter("deptName")%>', deptId : '<%=request.getParameter("deptId")%>',
-    	  tabName: '',  tabNameMD5: '', 
+    	  tabName: '',  tabNameMD5: '',
     	  alreadyCreateColumns: [], 
     	  add: {_name_cn:'', _name:'_c01', _data_type:'str', _max_len:'100'},
     	  
-    	  showAlert: false, alertType: 'success', alertText:'' , 
+    	  showAlert: false, showErrAlert: false, alertText:'' , 
     	  
     	  colNum : 0,
     	  
@@ -96,7 +104,7 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
       },
       
       methods : {
-    	  newTableOf: function(deptId, deptName) {
+    	  rest: function() {
     		  // alert(deptId + ',' + deptName);
     		  // reset new table ui
     		  this.tabName = '';
@@ -107,15 +115,8 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
     		  this.add._data_type = 'str';
     		  this.add._max_len = '100';
     		  this.showAlert = false;
-    		  
-    		  this.deptName = deptName;
-    		  this.deptId = deptId;
-    		  this.showType = 2;
-    	  },
-    	  
-    	  changeTable: function(tabId, tabName, tabNameCN) {
-    		  this.showType = 1;
-    		  this.curTableInfo[1].text = tabName;
+    		  this.colNum = 0;
+    		  this.mcols = '';
     	  },
     	  
     	  newTableToServer: function() {
@@ -126,18 +127,19 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
     		  axios.post(url, param).then(function(res) {
     			  var d = res.data;
     			  if (d.status == 'OK') {
-    				  vm.alertType = 'success';
-    				  vm.alertText = 'Create Table Success';
     				  vm.showAlert = true;
+    				  vm.showErrAlert = false;
+    				  vm.alertText = 'Create Table Success';
     			  } else {
+    				  vm.showErrAlert = true;
+    				  vm.showAlert = false;
     				  vm.alertType = 'error';
     				  vm.alertText = 'Create Table Fail: ' + d.msg;
-    				  vm.showAlert = true;
     			  }
     		  }).catch(function (error) {
-    			  vm.alertType = 'error';
+    			  vm.showAlert = false;
+    			  vm.showErrAlert = true;
     			  vm.alertText = 'Create Table Fail: ' + error;
-    			  vm.showAlert = true;
     		  });
     	  },
     	  
@@ -151,13 +153,15 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
     		  if (this.add._name_cn == '') {
     			  return;
     		  }
+    		  var cbfunc = cb;
     		  
     		  axios.post(url, [param]).then(function(res) {
     			  var d = res.data;
     			  if (d.status == 'OK') {
+    				  vm.showAlert = true;
+    				  vm.showErrAlert = false;
     				  vm.alertType = 'success';
     				  vm.alertText = 'Create Column Success';
-    				  vm.showAlert = true;
     				  vm.colNum++;
     				  var cc = vm.colNum + 1;
     				  if (cc < 10) cc = '0' + cc;
@@ -166,17 +170,18 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
     				  
     				  vm.alreadyCreateColumns.push(param);
     			  } else {
-    				  vm.alertType = 'error';
-    				  vm.alertText = 'Create Column Fail: ' + d.msg;
-    				  vm.showAlert = true;
+    				  vm.showAlert = false;
+    				  vm.showErrAlert = true;
+    				  vm.alertText = 'Server Create Column Fail: ' + d.msg;
     			  }
-    			  if (cb) {
-    				  cb();
+    			  // console.log(cbfunc);
+    			  if (typeof cbfunc == 'function') {
+    				  cbfunc();
     			  }
     		  }).catch(function (error) {
-    			  vm.alertType = 'error';
-    			  vm.alertText = 'Create Column Fail: ' + error;
-    			  vm.showAlert = true;
+    			  vm.alertText = 'Client Create Column Fail: ' + error;
+    			  vm.showAlert = false;
+				  vm.showErrAlert = true;
     		  });
     	  },
       
@@ -198,13 +203,15 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
 	    		  vm.mcols = lines.join('\n');
 	    	  });
 	      },
+	      
+	      
       },
       watch: {
       }
     });
     
     vm.$watch('tabName', function (newVal, oldVal) {
-    	if (newVal != '') this.tabNameMD5 = '' + md5(newVal);
+    	if (newVal != '') this.tabNameMD5 = 'e' + md5(newVal);
     	else  this.tabNameMD5 = '';
     });
     

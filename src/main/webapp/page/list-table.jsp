@@ -121,7 +121,9 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
        		  axios.get(url).then(function (res) {
        			  var d = res.data.data;
        			  //console.log(res);
-       			  for (var i = 1; i < d.length; ++i) {
+       			  for (var i = 0; i < d.length; ++i) {
+       				  if (d[i]._type != 2)
+       					  continue;
        				  d[i].idx = i;
            			  vm.editDialog.datas.push(d[i]);
            		  }
