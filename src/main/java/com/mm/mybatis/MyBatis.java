@@ -31,13 +31,13 @@ public class MyBatis {
 			init();
 		}
 		
-		return mFactory.openSession();
+		return mFactory.openSession(false);
 	}
 	
 	public static SqlSession getBatchSession() {
 		if (! mInited) {
 			init();
 		}
-		return mFactory.openSession(ExecutorType.BATCH);
+		return mFactory.openSession(ExecutorType.BATCH, false);
 	}
 }

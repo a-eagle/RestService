@@ -1,6 +1,7 @@
 package com.mm.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -112,21 +113,21 @@ public class TablePrototypeService extends BasicService {
 	
 	@PUT
 	@Path("/{id}")
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public ServiceResult update(@PathParam("id") String id, @FormParam("_name_cn") String name, @FormParam("_html") String nameCN, @FormParam("_owner") String owner) {
+	public ServiceResult update(@PathParam("id") String id, String json) {
 		SqlSession session = null;
 		ServiceResult sr = new ServiceResult();
 		try {
 			session  = MyBatis.getSession();
-			TablePrototype d = new TablePrototype();
-			d._id = Long.parseLong(id);
-			d._name = name;
-			d._name_cn = nameCN; 
-			int num = session.update("com.mm.mybatis.TablePrototype.update", d);
+			ObjectMapper m = new ObjectMapper();
+			JavaType jt = m.getTypeFactory().constructParametricType(HashMap.class, String.class, String.class);
+			HashMap<String, String> data = m.readValue(json, jt);
+			data.put("_id", id);
+			
+			int num = session.update("com.mm.mybatis.TablePrototype.update", data);
 			session.commit();
 			sr.setSimpleData(num);
-			TablePrototypeManager.dirty(owner);
 		} catch(Exception ex) {
 			ex.printStackTrace();
 			sr.fail(ex.getMessage());

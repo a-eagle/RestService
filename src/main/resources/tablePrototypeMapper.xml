@@ -19,8 +19,14 @@
        		 VALUES (#{_type}, #{_name}, #{_name_cn}, #{_data_type}, #{_max_len}, #{_owner}, #{_html}, #{_dept_id})
     </insert>
     
-    <update id="update" parameterType="com.mm.mybatis.TablePrototype">
-       UPDATE _table_prototype t SET _name_cn = #{_name_cn}, _html = #{_html}  WHERE _id = #{id}
+    <update id="update" parameterType="map">
+       UPDATE _table_prototype t SET 
+       	 <foreach collection="_parameter.keys"  item="key" separator=",">
+       	 	<if test = ' "${key}" != "_id" ' >
+       	 		${key} = #{_parameter[${key}]}
+       	 	</if>
+       	 </foreach>
+          WHERE _id = #{_id}
     </update>
     
     <delete id="delete" parameterType="java.lang.String" >
