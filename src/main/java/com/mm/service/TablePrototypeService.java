@@ -87,20 +87,21 @@ public class TablePrototypeService extends BasicService {
 			ObjectMapper m = new ObjectMapper();
 			JavaType jt = m.getTypeFactory().constructParametricType(ArrayList.class, TablePrototype.class);
 			List<TablePrototype> data = m.readValue(json, jt);
-			session  = MyBatis.getBatchSession();
+			session  = MyBatis.getSession();
 			int num = 0;
 			for (TablePrototype d : data) {
-				num += session.insert("com.mm.mybatis.TablePrototype.insert", d);
 				if (d._type == TablePrototype.TYPE_TABLE) {
 					session.insert("com.mm.mybatis.TablePrototype.createTableStructure", d);
 					System.out.println(d._name);
 				} else if (d._type == TablePrototype.TYPE_COLUMN) {
 					session.insert("com.mm.mybatis.TablePrototype.addColumn", d);
 				}
+				num += session.insert("com.mm.mybatis.TablePrototype.insert", d);
 			}
 			session.commit();
 			r.setSimpleData(num);
 		} catch(Exception ex) {
+			session.rollback();
 			ex.printStackTrace();
 			r.fail(ex.getMessage());
 		} finally {
@@ -129,6 +130,7 @@ public class TablePrototypeService extends BasicService {
 			session.commit();
 			sr.setSimpleData(num);
 		} catch(Exception ex) {
+			session.rollback();
 			ex.printStackTrace();
 			sr.fail(ex.getMessage());
 		} finally {
@@ -152,6 +154,7 @@ public class TablePrototypeService extends BasicService {
 			sr.setSimpleData(num);
 			TablePrototypeManager.dirty(name);
 		} catch(Exception ex) {
+			session.rollback();
 			ex.printStackTrace();
 			sr.fail(ex.getMessage());
 		} finally {
@@ -174,6 +177,7 @@ public class TablePrototypeService extends BasicService {
 			session.commit();
 			sr.setSimpleData(num);
 		} catch(Exception ex) {
+			session.rollback();
 			ex.printStackTrace();
 			sr.fail(ex.getMessage());
 		} finally {

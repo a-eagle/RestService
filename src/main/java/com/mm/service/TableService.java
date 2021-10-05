@@ -117,7 +117,7 @@ public class TableService extends BasicService {
 		SqlSession session = null;
 		ServiceResult sr = new ServiceResult();
 		try {
-			session  = MyBatis.getSession();
+			session  = MyBatis.getBatchSession();
 			ObjectMapper m = new ObjectMapper();
 			TypeFactory fac = m.getTypeFactory();
 			JavaType innerType = fac.constructParametricType(HashMap.class, String.class, String.class);
@@ -144,6 +144,7 @@ public class TableService extends BasicService {
 			session.commit();
 			sr.setSimpleData(num);
 		} catch(Exception ex) {
+			session.rollback();
 			ex.printStackTrace();
 			sr.fail(ex.getMessage());
 		} finally {
