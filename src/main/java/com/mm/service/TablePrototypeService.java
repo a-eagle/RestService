@@ -162,4 +162,26 @@ public class TablePrototypeService extends BasicService {
 		return sr;
 	}
 	
+	@DELETE
+	@Path("/column/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public ServiceResult deleteColumn(@PathParam("id") String id) {
+		SqlSession session = null;
+		ServiceResult sr = new ServiceResult();
+		try {
+			session  = MyBatis.getSession();
+			int num = session.delete("com.mm.mybatis.TablePrototype.deleteColumn", Long.parseLong(id));
+			session.commit();
+			sr.setSimpleData(num);
+		} catch(Exception ex) {
+			ex.printStackTrace();
+			sr.fail(ex.getMessage());
+		} finally {
+			if (session != null)
+				session.close();
+		}
+		
+		return sr;
+	}
+	
 }

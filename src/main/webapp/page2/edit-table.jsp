@@ -90,8 +90,21 @@
 	<i-col span="3" >  <i-button block  @click="newMultiColumn"> 创建多列 </i-button> </i-col>
 	
 </row>
-
 </Card>
+
+<Modal v-model="showDeleteDialog" width="360">
+    <p slot="header" style="color:#f60;text-align:center">
+        <Icon type="ios-information-circle"></Icon>
+        <span>Delete confirmation</span>
+    </p>
+    <div style="text-align:center">
+        <p>Will you delete column "{{delColInfo ? delColInfo._name_cn : null}}" ?</p>
+    </div>  
+    <div slot="footer">
+        <i-Button type="error" size="large" long :loading="modal_loading" @click="delColOnDialog">Delete</i-Button>
+    </div>
+</Modal>
+
 
 </div>
 
@@ -127,6 +140,11 @@
     	  
     	  mcols: '',
     	  mcols_split: '\\s+',
+    	  
+    	  showDeleteDialog: false,
+    	  deleteDialogMsg: '',
+    	  modal_loading:false,
+    	  delColInfo: null,
       },
       
       mounted: function() {
@@ -135,7 +153,7 @@
     	  
    		  axios.get(url).then(function (res) {
    			  var d = res.data.data;
-   			  console.log(d);
+   			  // console.log(d);
    			  for (var i = 0; i < d.length; ++i) {
    				  if (d[i]._type == 1) {
    					  vm.tabName = d[i]._name_cn;
@@ -296,7 +314,30 @@
 	      },
 	      
 	      deleteCol: function(row, index) {
-	    	  
+	    	  this.delColInfo = {_id: row._id, _name_cn: row._name_cn, idx: index};
+	    	  this.showDeleteDialog = true;
+	    	  this.deleteDialogMsg = "";
+	    	  this.modal_loading =  false;
+	      },
+	      
+	      delColOnDialog: function() {
+	    	  this.modal_loading = true;
+	    	  var vm = this;
+    		  var url = "<%=request.getContextPath()%>/rest/tableprototype/column/" + this.delColInfo._id;
+    		  axios.delete(url).then(function(res) {
+    			  var d = res.data;
+    			  console.log(d);
+    			  vm.modal_loading = false;
+    			  vm.showDeleteDialog = false;
+    			  if (d.status == 'OK') {
+    				  vm.alreadyCreateColumns.splice(vm.delColInfo.idx, 1);
+    				  vm.$Message.success({content: 'Successfully delete', background: true, duration: 2.5});
+    			  } else {
+    				  vm.$Message.error({content: 'Server Fail delete: '+ d.msg, background: true, duration: 10});
+    			  }
+    		  }).catch(function (error) {
+    			  vm.$Message.error({content:'Client Fail delete: '+ error, background: true, duration: 10});
+    		  });
 	      },
 	      
 	      saveCol: function(row, index) {
