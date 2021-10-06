@@ -1,13 +1,20 @@
 package com.mm.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.ibatis.session.SqlSession;
 
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mm.mybatis.MyBatis;
+import com.mm.mybatis.TablePrototype;
 import com.mm.mybatis.User;
 
 @Path("/user")
@@ -119,6 +126,34 @@ public class UserService extends BasicService {
 		} catch(Exception ex) {
 			ex.printStackTrace();
 			sr.fail(ex.getMessage());
+		} finally {
+			if (session != null)
+				session.close();
+		}
+		
+		return sr;
+	}
+	
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("login")
+	public ServiceResult login(String json, @Context HttpServletRequest req) {
+		SqlSession session = null;
+		ServiceResult sr = new ServiceResult();
+		try {
+			ObjectMapper m = new ObjectMapper();
+			User data = m.readValue(json, User.class);
+			session  = MyBatis.getSession();
+			User nu = session.selectOne("com.mm.mybatis.User.findByName", data.name);
+			if (nu != null && data.password != null && nu.password != null && data.password.equals(nu.password)) {
+				// sr.setSimpleData("Token=" + AuthDynamic.Auth.buildAuthToken(data.name));
+			} else {
+				sr.fail("User name or password wrong");
+			}
+		} catch(Exception ex) {
+			ex.printStackTrace();
+			sr.fail("Server occur exception");
 		} finally {
 			if (session != null)
 				session.close();

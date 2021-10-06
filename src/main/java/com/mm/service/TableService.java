@@ -56,7 +56,11 @@ public class TableService extends BasicService {
 			
 		} catch(Exception ex) {
 			ex.printStackTrace();
-			r.fail(ex.getMessage());
+			if ("ui".equals(rfStr)) {
+				r.fail(ex.getMessage());
+			} else {
+				r.fail("Server occur exception");
+			}
 		} finally {
 			if (session != null)
 				session.close();
@@ -67,7 +71,7 @@ public class TableService extends BasicService {
 	@GET
 	@Path("/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public ServiceResult findByName(@PathParam("table-name") String tableName, @PathParam("id") String id) {
+	public ServiceResult findById(@PathParam("table-name") String tableName, @PathParam("id") String id) {
 		SqlSession session = null;
 		User u = null;
 		ServiceResult sr = new ServiceResult();
@@ -80,7 +84,7 @@ public class TableService extends BasicService {
 			sr.setSimpleData(u);
 		} catch(Exception ex) {
 			ex.printStackTrace();
-			sr.fail(ex.getMessage());
+			sr.fail("Server occur exception");
 		} finally {
 			if (session != null)
 				session.close();
@@ -146,7 +150,7 @@ public class TableService extends BasicService {
 		} catch(Exception ex) {
 			session.rollback();
 			ex.printStackTrace();
-			sr.fail(ex.getMessage());
+			sr.fail("Server occur exception");
 		} finally {
 			if (session != null)
 				session.close();

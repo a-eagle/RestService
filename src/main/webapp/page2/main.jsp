@@ -24,7 +24,6 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
 		border-bottom: 1px solid #d7dde4;
 		border-top: 1px solid #d7dde4;
 		float: left;
-		
 	}
 	.header {
 		border-bottom: 0px solid #d7dde4;
@@ -40,7 +39,7 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
 	    left: 20px;
 	}
 	.layout-nav {
-	    width: 420px;
+	    width: 220px;
 	    margin: 0 auto;
 	    margin-right: 20px;
 	}
@@ -58,7 +57,14 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
 		border: 0;
 		width: calc(100% - 240px);
 	}
-  
+  	.head-title {
+  		color: #ddd;
+  		font-size: 20px;
+  		position: relative;
+	    left: 50px;
+	    margin: auto 0;
+	    float: left;
+  	}
   </style>
 </head>
 <body>
@@ -66,6 +72,7 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
     <div class="header" >
     	<i-Menu mode="horizontal" theme="dark" >
     		<div class="layout-logo"></div>
+    		<div class='head-title'> 政务数据共享平台</div>
     		<div class="layout-nav">
 	    		<Menu-Item name="1">
 	                <Icon type="ios-navigate"></Icon>
