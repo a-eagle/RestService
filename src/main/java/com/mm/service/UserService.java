@@ -138,7 +138,7 @@ public class UserService extends BasicService {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("login")
-	public ServiceResult login(String json, @Context HttpServletRequest req) {
+	public ServiceResult login(String json) {
 		SqlSession session = null;
 		ServiceResult sr = new ServiceResult();
 		try {
@@ -148,6 +148,7 @@ public class UserService extends BasicService {
 			User nu = session.selectOne("com.mm.mybatis.User.findByName", data.name);
 			if (nu != null && data.password != null && nu.password != null && data.password.equals(nu.password)) {
 				// sr.setSimpleData("Token=" + AuthDynamic.Auth.buildAuthToken(data.name));
+				setRequestUser(nu);
 			} else {
 				sr.fail("User name or password wrong");
 			}

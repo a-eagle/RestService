@@ -115,7 +115,14 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
     	  
     	  var vm = this;
     	  axios.get("<%=request.getContextPath()%>/rest/department").then(function (response) {
-    		  var dept = response.data.data;
+    		  var d = response.data;
+    		  if (d.status != "OK") {
+    			  if (d.msg == "Auth Fail") {
+    				  window.location = 'login.jsp';
+    			  }
+    			  return;
+    		  }
+    		  var dept = d.data;
     		  //console.log(dept);
     		  for (var i = 0; i < dept.length; ++i) {
     			  vm.deptInfos.push({id: dept[i].id, name: dept[i].name});
