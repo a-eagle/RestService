@@ -40,10 +40,12 @@
 
 
 <i-Table  :columns="colsInfo" :data="alreadyCreateColumns" height="300" >
+	<!-- 
 	<template slot-scope="{ row, index }" slot="action">
         <i-Button type="primary" size="small" style="margin-right: 5px" @click="editCol(index)">Edit</i-Button>
         <i-Button type="error" size="small" @click="deleteCol(index)">Delete</i-Button>
     </template>
+     -->
 </i-Table>
 
 <row justify="space-around" style=" background-color: #f5f7f9; padding:5px;" :gutter="8">
@@ -94,10 +96,10 @@
     	  tabName: '',  tabNameMD5: '',
     	  
     	  colsInfo: [ {title:'列名（中文）', key:'_name_cn'}, 
-    		  		  {title:'列名(英文)', key:'_name_'}, 
+    		  		  {title:'列名(英文)', key:'_name'}, 
     		  		  {title:'数据类型', key:'_data_type'}, 
     		  		  {title:'最大长度', key:'_max_len'}, 
-    		  		  {title:'', slot:'action'}],
+    		  		  ],
     	  
     	  alreadyCreateColumns: [], 
     	  
@@ -139,7 +141,7 @@
     		  var url = "<%=request.getContextPath()%>/rest/tableprototype";
     		  axios.post(url, param).then(function(res) {
     			  var d = res.data;
-    			  console.log(d);
+    			  vm.showAlertT = false;
     			  if (d.status == 'OK') {
     				  vm.showAlertT = true;
     				  vm.alertTypeT = 'success';
