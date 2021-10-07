@@ -33,6 +33,9 @@
 	<i-col span="2" > <i-button block @click="newTableToServer" > 创建表  </i-button>  </i-col>
 	<i-col span="2" >  <i-button block @click="rest"> 重置  </i-button> </i-col>
 </row>
+<alert v-if="showAlertT" show-icon :type = "alertTypeT"  closable >
+	{{alertTextT}}
+</alert>
 <Divider > </Divider>
 
 
@@ -101,6 +104,7 @@
     	  add: {_name_cn:'', _name:'_c01', _data_type:'str', _max_len:'100'},
     	  
     	  showAlert: false, alertText:'' , alertType:'success',
+    	  showAlertT: false, alertTextT:'' , alertTypeT:'success',
     	  
     	  colNum : 0,
     	  
@@ -135,20 +139,20 @@
     		  var url = "<%=request.getContextPath()%>/rest/tableprototype";
     		  axios.post(url, param).then(function(res) {
     			  var d = res.data;
+    			  console.log(d);
     			  if (d.status == 'OK') {
-    				  vm.showAlert = true;
-    				  vm.showErrAlert = false;
-    				  vm.alertText = 'Create Table Success';
+    				  vm.showAlertT = true;
+    				  vm.alertTypeT = 'success';
+    				  vm.alertTextT = 'Create Table Success';
     			  } else {
-    				  vm.showErrAlert = true;
-    				  vm.showAlert = false;
-    				  vm.alertType = 'error';
-    				  vm.alertText = 'Create Table Fail: ' + d.msg;
+    				  vm.showAlertT = true;
+    				  vm.alertTypeT = 'error';
+    				  vm.alertTextT = 'Create Table Fail: ' + d.msg;
     			  }
     		  }).catch(function (error) {
-    			  vm.showAlert = false;
-    			  vm.showErrAlert = true;
-    			  vm.alertText = 'Create Table Fail: ' + error;
+    			  vm.showAlertT = true;
+    			  vm.alertTypeT = 'error';
+    			  vm.alertTextT = 'Create Table Fail: ' + error;
     		  });
     	  },
     	  

@@ -86,8 +86,16 @@
          			}
          		});
             },
+        },
+        
+        mounted: function() {
+        	var cntHeight = window.innerHeight;
+        	var app = document.getElementById('app');
+        	var top = (cntHeight - app.offsetHeight) / 2;
+      		app.style.marginTop = '' + top + 'px';
         }
     });
+    
   </script>
 </body>
 </html>

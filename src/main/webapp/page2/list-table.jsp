@@ -60,7 +60,7 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
    		  axios.get(url).then(function (res) {
    			  var d = res.data.data;
    			  //console.log(res);
-   			  for (var i = 0; i < d.length; ++i) {
+   			  for (var i = 0; d && i < d.length; ++i) {
        			  vm.tableDatas.push({_id: d[i]._id, _name: d[i]._name, _name_cn: d[i]._name_cn, idx: i + 1});
        		  }
        	  });

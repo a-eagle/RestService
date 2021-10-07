@@ -24,6 +24,14 @@ public class BasicService {
 		s.setAttribute("user", u);
 	}
 	
+	public boolean isUserCertified() {
+		User u = getRequestUser();
+		if (u != null && u.name != null) {
+			return true;
+		}
+		return false;
+	}
+	
 	public static class ServiceResult {
 		public String status;  //  OK ,FAIL
 		public String msg;

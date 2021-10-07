@@ -36,7 +36,7 @@ public class TableService extends BasicService {
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public ServiceResult findAll(@PathParam("table-name") String tabName, @QueryParam("result-for") String rfStr) {
+	public ServiceResult findAll(@PathParam("table-name") String tabName) {
 		SqlSession session = null;
 		ServiceResult r = new ServiceResult();
 		try {
@@ -44,11 +44,14 @@ public class TableService extends BasicService {
 			TablePrototypeManager.Table t = TablePrototypeManager.findByName2(tabName, session);
 			Map<String, String> param = new HashMap<String, String>();
 			param.put("tableName", t.tableName);
-			String dc = t.dataColumns;
-			r.headers = t.dataHeaders;
-			if ("ui".equals(rfStr)) {
+			
+			String dc = null;
+			if (isUserCertified()) {
 				dc = t.queryColumns;
 				r.headers = t.queryHeaders;
+			} else {
+				dc = t.dataColumns;
+				r.headers = t.dataHeaders;
 			}
 			param.put("columns", dc);
 			List< java.util.Map<String, String> > u = session.selectList("com.mm.mybatis.Table.findAll", param);
@@ -56,7 +59,7 @@ public class TableService extends BasicService {
 			
 		} catch(Exception ex) {
 			ex.printStackTrace();
-			if ("ui".equals(rfStr)) {
+			if (isUserCertified()) {
 				r.fail(ex.getMessage());
 			} else {
 				r.fail("Server occur exception");
@@ -84,7 +87,11 @@ public class TableService extends BasicService {
 			sr.setSimpleData(u);
 		} catch(Exception ex) {
 			ex.printStackTrace();
-			sr.fail("Server occur exception");
+			if (isUserCertified()) {
+				sr.fail(ex.getMessage());
+			} else {
+				sr.fail("Server occur exception");
+			}
 		} finally {
 			if (session != null)
 				session.close();
@@ -150,7 +157,11 @@ public class TableService extends BasicService {
 		} catch(Exception ex) {
 			session.rollback();
 			ex.printStackTrace();
-			sr.fail("Server occur exception");
+			if (isUserCertified()) {
+				sr.fail(ex.getMessage());
+			} else {
+				sr.fail("Server occur exception");
+			}
 		} finally {
 			if (session != null)
 				session.close();

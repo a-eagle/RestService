@@ -1,3 +1,4 @@
+<%@page import="com.mm.mybatis.User"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <% 
 response.addCookie(new javax.servlet.http.Cookie("SameSite", "None"));
@@ -76,7 +77,7 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
     		<div class="layout-nav">
 	    		<Menu-Item name="1">
 	                <Icon type="ios-navigate"></Icon>
-	                Item 1
+	                <a href = "login.jsp"> Login </a>
 	            </Menu-Item>
             </div>
     	</i-Menu>
