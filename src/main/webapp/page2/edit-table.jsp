@@ -201,18 +201,12 @@
     		  axios.put(url, param).then(function(res) {
     			  var d = res.data;
     			  if (d.status == 'OK') {
-    				  vm.showAlertT = true;
-    				  vm.alertTypeT = 'success';
-    				  vm.alertTextT = 'Modify Table Success';
+    				  vm.$Message.success({content: 'Modify Table Success', background: true, duration: 2.5});
     			  } else {
-    				  vm.showAlertT = true;
-    				  vm.alertTypeT = 'error';
-    				  vm.alertTextT = 'Modify Table Fail: ' + d.msg;
+    				  vm.$Message.error({content: 'Modify Table Fail: ' + d.msg, background: true, duration: 10});
     			  }
     		  }).catch(function (error) {
-    			  vm.showAlertT = true;
-				  vm.alertTypeT = 'error';
-    			  vm.alertTextT = 'Modify Table Fail: ' + error;
+    			  vm.$Message.error({content: 'Modify Table Fail: ' + error, background: true, duration: 10});
     		  });
     	  },
     	  
@@ -224,24 +218,18 @@
     		  axios.put(url, param).then(function(res) {
     			  var d = res.data;
     			  if (d.status == 'OK') {
-    				  vm.showAlert = true;
-    				  vm.alertType = 'success';
-    				  vm.alertText = 'Modify Column Success';
+    				  vm.$Message.success({content: 'Modify Table Success', background: true, duration: 2.5});
     				  if (typeof cb == 'function') {
     					  cb(true);
     				  }
     			  } else {
-    				  vm.showAlert = true;
-    				  vm.alertType = 'error';
-    				  vm.alertText = 'Modify Column Fail: ' + d.msg;
+    				  vm.$Message.error({content: 'Modify Table Fail: ' + d.msg, background: true, duration: 10});
     				  if (typeof cb == 'function') {
     					  cb(false);
     				  }
     			  }
     		  }).catch(function (error) {
-    			  vm.showAlert = true;
-				  vm.alertType = 'error';
-    			  vm.alertText = 'Modify Column Fail: ' + error;
+    			  vm.$Message.error({content: 'Modify Table Fail: ' + error, background: true, duration: 10});
     			  if (typeof cb == 'function') {
 					  cb(false);
 				  }
@@ -263,9 +251,7 @@
     		  axios.post(url, [param]).then(function(res) {
     			  var d = res.data;
     			  if (d.status == 'OK') {
-    				  vm.showAlert = true;
-    				  vm.alertType = 'success';
-    				  vm.alertText = 'Create Column Success';
+    				  vm.$Message.success({content: 'Create Column Success', background: true, duration: 2.5});
     				  vm.colNum++;
     				  var cc = vm.colNum + 1;
     				  if (cc < 10) cc = '0' + cc;
@@ -274,18 +260,14 @@
     				  
     				  vm.alreadyCreateColumns.push(param);
     			  } else {
-    				  vm.showAlert = true;
-    				  vm.alertType = 'error';
-    				  vm.alertText = 'Server Create Column Fail: ' + d.msg;
+    				  vm.$Message.error({content: 'Server Create Column Fail: ' + d.msg, background: true, duration: 10});
     			  }
     			  // console.log(cbfunc);
     			  if (typeof cbfunc == 'function') {
     				  cbfunc();
     			  }
     		  }).catch(function (error) {
-    			  vm.alertText = 'Client Create Column Fail: ' + error;
-    			  vm.showAlert = true;
-    			  vm.alertType = 'error';
+    			  vm.$Message.error({content: 'Client Create Column Fail: ' + error, background: true, duration: 10});
     		  });
     	  },
       

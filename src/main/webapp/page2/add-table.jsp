@@ -143,18 +143,12 @@
     			  var d = res.data;
     			  vm.showAlertT = false;
     			  if (d.status == 'OK') {
-    				  vm.showAlertT = true;
-    				  vm.alertTypeT = 'success';
-    				  vm.alertTextT = 'Create Table Success';
+    				  vm.$Message.success({content: 'Create Table Success', background: true, duration: 2.5});
     			  } else {
-    				  vm.showAlertT = true;
-    				  vm.alertTypeT = 'error';
-    				  vm.alertTextT = 'Create Table Fail: ' + d.msg;
+    				  vm.$Message.error({content: 'Create Table Fail: '+ d.msg, background: true, duration: 10});
     			  }
     		  }).catch(function (error) {
-    			  vm.showAlertT = true;
-    			  vm.alertTypeT = 'error';
-    			  vm.alertTextT = 'Create Table Fail: ' + error;
+    			  vm.$Message.error({content: 'Create Table Fail: '+ error, background: true, duration: 10});
     		  });
     	  },
     	  
@@ -173,10 +167,7 @@
     		  axios.post(url, [param]).then(function(res) {
     			  var d = res.data;
     			  if (d.status == 'OK') {
-    				  vm.showAlert = true;
-    				  vm.showErrAlert = false;
-    				  vm.alertType = 'success';
-    				  vm.alertText = 'Create Column Success';
+    				  vm.$Message.success({content: 'Create Column Success', background: true, duration: 2.5});
     				  vm.colNum++;
     				  var cc = vm.colNum + 1;
     				  if (cc < 10) cc = '0' + cc;
@@ -185,18 +176,14 @@
     				  
     				  vm.alreadyCreateColumns.push(param);
     			  } else {
-    				  vm.showAlert = false;
-    				  vm.showErrAlert = true;
-    				  vm.alertText = 'Server Create Column Fail: ' + d.msg;
+    				  vm.$Message.error({content: 'Server Create Column Fail:' + d.msg, background: true, duration: 10});
     			  }
     			  // console.log(cbfunc);
     			  if (typeof cbfunc == 'function') {
     				  cbfunc();
     			  }
     		  }).catch(function (error) {
-    			  vm.alertText = 'Client Create Column Fail: ' + error;
-    			  vm.showAlert = false;
-				  vm.showErrAlert = true;
+				   vm.$Message.error({content: 'Client Create Column Fail:' + error, background: true, duration: 10});
     		  });
     	  },
       
