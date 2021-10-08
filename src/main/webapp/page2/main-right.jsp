@@ -31,9 +31,9 @@
     </h3>
      -->
     <Tabs :value="tab" type="card" closable @on-tab-remove='removeTab' >
-    	<Tab-pane v-for="(item, idx) in tabsInfo" :key="item.url" :label="item.text" :name="item.url" 	 >
-    		<iframe style="width:100%; border:0;" :id="'ifr' + idx"
-    			@load="adjustFrame('ifr' + idx)"
+    	<Tab-pane v-for="(item, idx) in tabsInfo" :key="item.id" :label="item.text" :name="item.id" 	 >
+    		<iframe style="width:100%; border:0;" :id="'ifr' + item.id"
+    			@load="adjustFrame('ifr' + item.id)"
     			scrolling="no"
     			frameborder="0"
     		 	:src='item.url'> </iframe>
@@ -46,39 +46,48 @@
       el: '#app',
       data : {
     	  tabsInfo : [
-    		  {text: '所属表', url:'list-table.jsp?deptId=' + deptId }, 
-    		  {text: '新建表', url:'add-table.jsp?deptId=' + deptId + '&deptName=' + deptNameEncode},
+    		  {text: '所属表', url:'list-table.jsp?deptId=' + deptId , id: '0'}, 
+    		  {text: '新建表', url:'add-table.jsp?deptId=' + deptId + '&deptName=' + deptNameEncode, id: '1'},
     		],
     	  tab: null,
+    	  nextTabId: 2,
       },
       
       methods : {
     	  // item = {text:'', url:'' }
     	  adjustFrame: function(frameId) {
+    		  var minHeight = window.innerHeight - 60; // sub tab header height
+    		  
     		  var fr = document.getElementById(frameId);
     		  if (fr.document) {
-    			  fr.height = fr.document.body.scrollHeight;
+    			  var h = fr.document.body.scrollHeight;
+    			  if (h < minHeight) 
+    				  h = minHeight;
+    			  fr.height = h;
     		  } else {
-    			  fr.height = fr.contentDocument.body.offsetHeight;
-    		  }  
+    			  var h = fr.contentDocument.body.offsetHeight;
+    			  if (h < minHeight) 
+    				  h = minHeight;
+    			  fr.height = h;
+    		  }
     	  },
     	  
     	  addTab: function(item) {
     		  for (var i = 0; i < this.tabsInfo.length; ++i) {
-    			  if (this.tabsInfo[i].url == item.url) {
-    				  this.tab = item.url;
+    			  if (this.tabsInfo[i].id == item.id) {
+    				  this.tab = item.id;
     				  return;
     			  }
     		  }
-    		  
+    		  item.id = '' + this.nextTabId;
+    		  this.nextTabId++;
     		  this.tabsInfo.push(item);
-    		  this.tab = item.url;
+    		  this.tab = item.id;
     	  },
     	  
-    	  removeTab:  function(url) {
-    		  console.log('remove tab:' + url);
+    	  removeTab:  function(id) {
     		  for (var i = 0; i < this.tabsInfo.length; ++i) {
-    			  if (this.tabsInfo[i].url == url) {
+    			  if (this.tabsInfo[i].id == id) {
     				  this.tabsInfo.splice(i, 1);
     			  }
     		  }
@@ -91,6 +100,12 @@
     	else  this.newTableInfo.tabNameMD5 = '';
     }); */
     
+    function notifyFrameHeightChanged() {
+    	console.log('parent call notify');
+    	for (var i = 0; i < vm.tabsInfo.length; ++i) {
+    		vm.adjustFrame('ifr' + i);
+    	}
+    }
   
   </script>
 </body>

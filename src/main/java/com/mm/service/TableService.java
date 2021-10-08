@@ -76,7 +76,7 @@ public class TableService extends BasicService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public ServiceResult findById(@PathParam("table-name") String tableName, @PathParam("id") String id) {
 		SqlSession session = null;
-		User u = null;
+		Map<String, String> u = null;
 		ServiceResult sr = new ServiceResult();
 		try {
 			session  = MyBatis.getSession();

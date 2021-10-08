@@ -30,7 +30,7 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
 </head>
 <body >
 <div id="app" >
-     <i-table height="400" :columns="tableHeaders" :data="tableDatas" >
+     <i-table :height="tableHeight" :columns="tableHeaders" :data="tableDatas" >
      	<template slot-scope="{ row, index }" slot="actions">
             <Icon type="md-build" size="20" @click="editItemData(row)"> </Icon> &nbsp;
             <Icon type="ios-list" size="20" @click="listItemData(row)"> </Icon>&nbsp;
@@ -45,6 +45,8 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
     var vm = new Vue({
       el: '#app',
       data : {
+    	  tableHeight: 600,
+    	  
     	  tableHeaders: [{title: '#', key:'idx', sortable: true, width:80 },
     		  {title: 'ID', key:'_id' , sortable: true, width:80},  
     		  {title: '表中文名', key:'_name_cn' , sortable: true},
@@ -65,6 +67,8 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
        		  }
        	  });
     	  
+   		  var height = window.innerHeight;
+   		  console.log(height);
       },
       
       methods : {
@@ -96,9 +100,18 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
     /* vm.$watch('newTableInfo.tabName', function (newVal, oldVal) {
     	if (newVal != '') this.newTableInfo.tabNameMD5 = '' + md5(newVal);
     	else  this.newTableInfo.tabNameMD5 = '';
-    }); */
+    }); 
+	*/
+	
+    window.onresize = function() {
+    	var mintHeight = window.innerHeight;//style.height;
+    	mintHeight -= 40; // sub bottom space
+    	
+    	if (mintHeight > 400 && mintHeight != vm.tableHeight) {
+    		vm.tableHeight = mintHeight;
+    	}
+    }
     
-  
   </script>
 </body>
 </html>
