@@ -8,6 +8,7 @@
   <script src="http://unpkg.com/view-design/dist/iview.min.js"></script>
   <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
   <script src="../js/md5.js"></script>
+  <script src="../js/auth.js"></script>
   <style>
   
   xbody::-webkit-scrollbar {

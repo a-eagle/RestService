@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -13,7 +14,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.UriInfo;
+
 import org.apache.ibatis.session.SqlSession;
 
 import com.fasterxml.jackson.databind.JavaType;
@@ -34,16 +39,40 @@ public class TableService extends BasicService {
 		public List<String> colValues;
 	}
 	
+	protected Map<String, String> buildQueryParams(TablePrototypeManager.Table t, MultivaluedMap<String, String> queryParams) {
+		if (queryParams == null) {
+			return null;
+		}
+		Map<String, String> rr = new HashMap<String, String>();
+		List<TablePrototype> cols = t.protoList;
+		Set<String> keys = queryParams.keySet();
+		for (String k : keys) {
+			for (int i = 0; i < cols.size(); ++i) {
+				if (cols.get(i)._name.equals(k)) {
+					String v = queryParams.getFirst(k);
+					if (v != null && !v.trim().equals("")) {
+						rr.put(k, v);
+					}
+					break;
+				}
+			}
+		}
+		return rr;
+	}
+	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public ServiceResult findAll(@PathParam("table-name") String tabName) {
+	public ServiceResult findAll(@PathParam("table-name") String tabName, @Context UriInfo uriInfo) {
 		SqlSession session = null;
 		ServiceResult r = new ServiceResult();
 		try {
 			session  = MyBatis.getSession();
+			MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
 			TablePrototypeManager.Table t = TablePrototypeManager.findByName2(tabName, session);
-			Map<String, String> param = new HashMap<String, String>();
+			Map<String, Object> param = new HashMap<String, Object>();
+			
 			param.put("tableName", t.tableName);
+			param.put("queryParams", buildQueryParams(t, queryParams));
 			
 			String dc = null;
 			if (isUserCertified()) {

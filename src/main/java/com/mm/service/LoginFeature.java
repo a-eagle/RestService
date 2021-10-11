@@ -20,7 +20,7 @@ import com.mm.mybatis.User;
 import com.mm.service.AuthDynamic.AuthFilter;
 
 // No use this filter
-@Provider
+// @Provider
 public class LoginFeature implements DynamicFeature {
 	
 	@Override

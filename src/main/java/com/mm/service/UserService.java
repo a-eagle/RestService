@@ -147,8 +147,8 @@ public class UserService extends BasicService {
 			session  = MyBatis.getSession();
 			User nu = session.selectOne("com.mm.mybatis.User.findByName", data.name);
 			if (nu != null && data.password != null && nu.password != null && data.password.equals(nu.password)) {
-				// sr.setSimpleData("Token=" + AuthDynamic.Auth.buildAuthToken(data.name));
-				setRequestUser(nu);
+				sr.setSimpleData(Auth.buildAuthToken(data.name));
+				// setRequestUser(nu);
 			} else {
 				sr.fail("User name or password wrong");
 			}

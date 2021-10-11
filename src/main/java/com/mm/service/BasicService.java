@@ -7,26 +7,22 @@ import javax.servlet.http.HttpSession;
 import javax.ws.rs.core.Context;
 
 import com.mm.mybatis.User;
+import com.mm.service.Auth.Token;
 
 public class BasicService {
 	@Context protected HttpServletRequest mRequest;
 	
-	public User getRequestUser() {
-		HttpSession s = mRequest.getSession(false);
-		if (s != null) {
-			return (User)s.getAttribute("user");
-		}
-		return null;
+	public Auth.Token getRequestAuth() {
+		return (Token) mRequest.getAttribute("Auth.Token");
 	}
 	
-	public void setRequestUser(User u) {
-		HttpSession s = mRequest.getSession(true);
-		s.setAttribute("user", u);
+	public void setRequestAuth(Auth.Token token) {
+		mRequest.setAttribute("Auth.Token", token);
 	}
 	
 	public boolean isUserCertified() {
-		User u = getRequestUser();
-		if (u != null && u.name != null) {
+		Auth.Token u = getRequestAuth();
+		if (u != null && u.isValid()) {
 			return true;
 		}
 		return false;

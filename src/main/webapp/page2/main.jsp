@@ -11,6 +11,7 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
     <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
     <script type="text/javascript" src="http://unpkg.com/view-design/dist/iview.min.js"></script>
   <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
+  <script src="../js/auth.js"></script>
   <style>
 	.layout {
 	    border: 0px solid #d7dde4;

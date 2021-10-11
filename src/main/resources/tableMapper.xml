@@ -4,7 +4,12 @@
 <mapper namespace="com.mm.mybatis.Table" >
 
     <select id="findAll" parameterType="map" resultType="map">
-		SELECT ${columns} FROM ${tableName}
+		SELECT ${columns} FROM ${tableName} 
+		<where>
+			<foreach collection="queryParams.keys"  item="key"  separator="and" >
+		        ${key} = #{queryParams[${key}]}
+	  		</foreach>
+		</where>
     </select>
     
     <select id="findById" parameterType="map" resultType="map">

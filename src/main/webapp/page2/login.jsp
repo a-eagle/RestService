@@ -77,10 +77,12 @@
           	    var param = {name: this.name, password: this.password};
          		axios.post(url, param).then(function (res) {
          			var d = res.data;
-         			console.log(d);
          			if (d.status == 'OK') {
-         				document.cookie = d.data;
-         				window.location = 'main.jsp';
+         				// document.cookie = d.data;
+         				localStorage.setItem('Auth', d.data);
+         				if (d.data) {
+         					window.location = 'main.jsp';
+         				}
          			} else {
          				vm.$Message.error({background: true, content:'Login fail:' + d.msg, duration: 5 });
          			}

@@ -28,7 +28,7 @@ import javax.ws.rs.ext.Provider;
 import com.mm.mybatis.User;
 
 // No use this filter
-// @Provider
+@Provider
 public class AuthDynamic implements DynamicFeature {
 
 	@Override
@@ -45,124 +45,38 @@ public class AuthDynamic implements DynamicFeature {
 	}
 
 	public static class AuthFilter implements ContainerRequestFilter, ContainerResponseFilter {
-		private static ThreadLocal lo = new ThreadLocal();
+		// private static ThreadLocal lo = new ThreadLocal();
 		
 		@Context
 		private HttpServletRequest mReq;
 		
 		@Override
 		public void filter(ContainerRequestContext requestContext) throws IOException {
-			String path = requestContext.getUriInfo().getPath();
-			System.out.println("Filter request path: " + path);
-			String token = requestContext.getHeaderString("Token");
+			// String path = requestContext.getUriInfo().getPath();
+			// System.out.println("Filter request path: " + path);
+			String token = requestContext.getHeaderString("Auth");
 
 			Auth.Token auth = Auth.parseAuthToken(token);
 			
-			if (auth == null || !auth.valid()) {
+			if (auth == null || !auth.isValid()) {
 				BasicService.ServiceResult sr = new BasicService.ServiceResult();
 				sr.fail("Auth Fail");
 				Response r = Response.status(Response.Status.OK).entity(sr).build();
 				requestContext.abortWith(r);
 			} else {
-				lo.set(auth);
+				mReq.setAttribute("Auth.Token", auth);
 			}
 		}
 
 		@Override
 		public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext)
 				throws IOException {
-			String path = requestContext.getUriInfo().getPath();
-			System.out.println("Filter response path: " + path);
-			lo.remove();
-		}
-
-	}
-
-	public static class Auth {
-		private static final byte[] KEY = "auth-x".getBytes();
-		
-		public static class Token {
-			String userName;
-			long time;
+			// String path = requestContext.getUriInfo().getPath();
+			// System.out.println("Filter response path: " + path);
 			
-			public boolean valid() {
-				if (userName == null || userName.length() == 0) {
-					return false;
-				}
-				long curTime = System.currentTimeMillis() / 1000;
-				// 过期时间24h
-				return curTime > time + 24 * 3600;
-			}
-		}
-		
-		private static MessageDigest getMD5() {
-			try {
-				return MessageDigest.getInstance("MD5");
-			} catch (NoSuchAlgorithmException e) {
-				e.printStackTrace();
-			}
-			return null;
+			// 让浏览器能访问到其它响应头
+			//responseContext.addHeader("Access-Control-Expose-Headers","Auth");
 		}
 
-		public static String buildAuthToken(String userName) {
-			if (userName == null || userName.length() == 0) {
-				return null;
-			}
-			StringBuilder buf = new StringBuilder();
-			buf.append("User: ").append(userName).append("\n");
-			buf.append("Time: ").append(System.currentTimeMillis() / 1000);
-			byte[] bytes = buf.toString().getBytes();
-			try {
-				byte[] e = encrypt(bytes, KEY);
-				String b = Base64.getEncoder().encodeToString(e);
-				return b;
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			return null;
-		}
-
-		public static Token parseAuthToken(String auth) {
-			if (auth == null || auth.length() == 0) {
-				return null;
-			}
-			try {
-				byte[] db = decrypt(auth.getBytes(), KEY);
-				String data = new String(db);
-				Token token = new Token();
-				String[] dds = data.split("\n");
-				for (String s : dds) {
-					if (s.startsWith("User: ")) {
-						token.userName = s.substring(6);
-					} else if (s.startsWith("Time: ")) {
-						token.time = Long.parseLong(s.substring(6));
-					}
-				}
-				return token;
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			return null;
-		}
-
-		private static byte[] encrypt(byte[] data, byte[] key) throws Exception {
-			SecureRandom sr = new SecureRandom();
-			DESKeySpec dks = new DESKeySpec(key);
-			SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
-			SecretKey securekey = keyFactory.generateSecret(dks);
-			Cipher cipher = Cipher.getInstance("DES");
-			cipher.init(Cipher.ENCRYPT_MODE, securekey, sr);
-			return cipher.doFinal(data);
-		}
-
-		private static byte[] decrypt(byte[] data, byte[] key) throws Exception {
-			SecureRandom sr = new SecureRandom();
-			DESKeySpec dks = new DESKeySpec(key);
-			SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
-			SecretKey securekey = keyFactory.generateSecret(dks);
-			Cipher cipher = Cipher.getInstance("DES");
-			cipher.init(Cipher.DECRYPT_MODE, securekey, sr);
-			return cipher.doFinal(data);
-		}
 	}
 }

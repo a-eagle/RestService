@@ -13,6 +13,7 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
   <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
   <script src="http://unpkg.com/view-design/dist/iview.min.js"></script>
   <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
+  <script src="../js/auth.js"></script>
    <script>
   
   	var deptId = '<%=request.getParameter("deptId")%>';
@@ -66,9 +67,6 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
        			  vm.tableDatas.push({_id: d[i]._id, _name: d[i]._name, _name_cn: d[i]._name_cn, idx: i + 1});
        		  }
        	  });
-    	  
-   		  var height = window.innerHeight;
-   		  console.log(height);
       },
       
       methods : {
