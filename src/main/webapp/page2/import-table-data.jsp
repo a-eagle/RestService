@@ -165,7 +165,8 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
 			  for (var i = 0; i < this.tableHeadersProto.length; ++i) {
 				  var c = this.tableHeadersProto[i];
 				  for (k in headRowData) {
-					  if (headRowData[k] == c._name_cn) {
+					  var kk = String(headRowData[k]);
+					  if (kk.trim() == c._name_cn) {
 						  headerMap.push({key: c._name, value: k});
 						  break;
 					  } 
@@ -174,7 +175,7 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
 			  
 			  // build data
 			  for (var i = 1; i < json.length; ++i) {
-				  var item = {};
+				  var item = {IDX: i};
 				  var rowData = json[i];
 				  for (var j = 0; j < headerMap.length; ++j) {
 					  var h = headerMap[j];
@@ -204,9 +205,10 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
     	  importToServer: function() {
     		  var vm = this;
         	  var url = '<%=request.getContextPath()%>/rest/api/' + tableName;
-        	  console.log(url);
+        	  // console.log(url);
        		  axios.post(url, this.tableDatas).then(function (res) {
        			  var data = res.data;
+       			  console.log(data);
        			  if (data.status == 'OK') {
        				vm.alertType = 'success';
        				vm.showAlert = true;

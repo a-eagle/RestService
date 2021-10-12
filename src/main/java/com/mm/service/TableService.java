@@ -177,8 +177,8 @@ public class TableService extends BasicService {
 					// no data, ignore
 					continue;
 				}
-				int numr = session.insert("com.mm.mybatis.Table.insert", param);
-				num += numr;
+				session.insert("com.mm.mybatis.Table.insert", param);
+				num += 1;
 			}
 			
 			session.commit();

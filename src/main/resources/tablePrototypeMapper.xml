@@ -4,7 +4,7 @@
 <mapper namespace="com.mm.mybatis.TablePrototype" >
 
     <select id="findByName" parameterType="java.lang.String" resultType="com.mm.mybatis.TablePrototype">
-		select * from  _table_prototype where _owner = #{name} order by _type asc
+		select * from  _table_prototype where _owner = #{name} order by _type asc, _id asc
     </select>
     
     <select id="findByDeptId" parameterType="int" resultType="com.mm.mybatis.TablePrototype">
