@@ -92,7 +92,7 @@ public class TablePrototypeService extends BasicService {
 			for (TablePrototype d : data) {
 				if (d._type == TablePrototype.TYPE_TABLE) {
 					session.insert("com.mm.mybatis.TablePrototype.createTableStructure", d);
-					System.out.println(d._name);
+					// System.out.println(d._name);
 				} else if (d._type == TablePrototype.TYPE_COLUMN) {
 					session.insert("com.mm.mybatis.TablePrototype.addColumn", d);
 				}

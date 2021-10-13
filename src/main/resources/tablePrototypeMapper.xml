@@ -4,7 +4,7 @@
 <mapper namespace="com.mm.mybatis.TablePrototype" >
 
     <select id="findByName" parameterType="java.lang.String" resultType="com.mm.mybatis.TablePrototype">
-		select * from  _table_prototype where _owner = #{name} order by _type asc, _id asc
+		select * from  _table_prototype where _owner = #{name}
     </select>
     
     <select id="findByDeptId" parameterType="int" resultType="com.mm.mybatis.TablePrototype">
@@ -26,7 +26,11 @@
        	 		${key} = #{_parameter[${key}]}
        	 	</if>
        	 </foreach>
-          WHERE _id = #{_id}
+          WHERE _id = #{_id};
+          
+          <if test='_max_len != null' >
+          	 alter table ${_owner} modify ${_name} varchar( ${_max_len} )
+          </if>
     </update>
     
     <delete id="delete" parameterType="java.lang.String" >

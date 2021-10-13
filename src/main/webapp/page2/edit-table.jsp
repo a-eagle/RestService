@@ -56,13 +56,18 @@
     	<i-input v-else v-model.trim="curEidtRowData._name_cn" > </i-input>
     </template>
     
+    <template slot-scope="{ row, index }" slot="_max_len">
+    	<span v-if="curEidtRowIdx != index" > {{row._max_len}} </span>
+    	<i-input v-else type='number' v-model.trim="curEidtRowData._max_len" > </i-input>
+    </template>
+    
 </i-Table>
 
 <row justify="space-around" style=" background-color: #f5f7f9; padding:5px;" :gutter="8">
 	<i-col span="5" > <i-input v-model.trim = 'add._name_cn' required maxlength="30"  show-word-limit>  </i-col>
 	<i-col span="5"> <i-input  v-model.trim = 'add._name' required> </i-col>
 	<i-col span="5" > <i-input   v-model.trim = 'add._data_type' required> </i-col>
-	<i-col span="5" > <i-input   v-model.trim = 'add._max_len' required> </i-col>
+	<i-col span="5" > <i-input type='number'  v-model.trim = 'add._max_len' required> </i-col>
 	<i-col span="4" >  <i-button block @click="newColumnToServer"> 创建列  </i-button> </i-col>
 </row>
 
@@ -126,7 +131,7 @@
     	  colsInfo: [ {title:'列名（中文）', key:'_name_cn', slot:'_name_cn'}, 
     		  		  {title:'列名(英文)', key:'_name'}, 
     		  		  {title:'数据类型', key:'_data_type'}, 
-    		  		  {title:'最大长度', key:'_max_len'}, 
+    		  		  {title:'最大长度', key:'_max_len', slot: '_max_len' }, 
     		  		  {title:'Actions', slot:'action'}],
     	  
     	  alreadyCreateColumns: [], 
@@ -154,7 +159,7 @@
     	  
    		  axios.get(url).then(function (res) {
    			  var d = res.data.data;
-   			  // console.log(d);
+   			  console.log(d);
    			  for (var i = 0; i < d.length; ++i) {
    				  if (d[i]._type == 1) {
    					  vm.tabName = d[i]._name_cn;
@@ -292,7 +297,7 @@
 	      },
 	      
 	      editCol: function(row, index) {
-	    	  this.curEidtRowData = row,
+	    	  this.curEidtRowData = Object.assign({}, row);
 	    	  this.curEidtRowIdx = index;
 	      },
 	      
@@ -325,13 +330,17 @@
 	      
 	      saveCol: function(row, index) {
 	    	  var idx = index;
-	    	  var param = {_name_cn: row._name_cn, _id: row._id};
+	    	  var param = {_name_cn: this.curEidtRowData._name_cn, _id: row._id, _name: row._name, _owner: row._owner };
+	    	  if (this.curEidtRowData._max_len != row._max_len) {
+	    		  param._max_len = this.curEidtRowData._max_len;
+	    	  }
 	    	  var vm = this;
 	    	  this.updateTableColToServer(param, function(ok) {
 	    		  vm.curEidtRowIdx = -1;
 	        	  vm.curEidtRowData = null;
 	        	  if (ok) {
 	        		  vm.alreadyCreateColumns[idx]._name_cn = param._name_cn;
+	        		  vm.alreadyCreateColumns[idx]._max_len = param._max_len;
 	        	  }
 	    	  });
 	      }
