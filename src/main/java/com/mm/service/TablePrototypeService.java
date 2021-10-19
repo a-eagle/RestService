@@ -188,4 +188,27 @@ public class TablePrototypeService extends BasicService {
 		return sr;
 	}
 	
+	@GET
+	@Path("/count")
+	@Produces(MediaType.APPLICATION_JSON)
+	public ServiceResult countByDept() {
+		SqlSession session = null;
+		ServiceResult sr = new ServiceResult();
+		try {
+			session  = MyBatis.getSession();
+			List<java.util.Map<String, Object>> data = session.selectList("com.mm.mybatis.TablePrototype.countByDept");
+			session.commit();
+			sr.setListData(data);
+		} catch(Exception ex) {
+			session.rollback();
+			ex.printStackTrace();
+			sr.fail(ex.getMessage());
+		} finally {
+			if (session != null)
+				session.close();
+		}
+		
+		return sr;
+	}
+	
 }

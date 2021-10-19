@@ -88,7 +88,8 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
         <div class='menu'>
         	<i-Menu theme="dark" width="auto" mode="vertical" active-name='' @on-select= 'changeDept'>
         		<Menu-Item v-for="dept in deptInfos" :name="dept.id" :key = 'dept.id'  > 
-        			{{dept.name}}
+        			{{dept.name}} &nbsp;&nbsp;
+        			<span v-if="dept.count != 0" > ({{dept.count}}) </span>
         		</Menu-Item>
         	</i-Menu>
         </div>
@@ -125,10 +126,23 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
     			  return;
     		  }
     		  var dept = d.data;
-    		  //console.log(dept);
+    		  // console.log(dept);
     		  for (var i = 0; i < dept.length; ++i) {
-    			  vm.deptInfos.push({id: dept[i].id, name: dept[i].name});
+    			  vm.deptInfos.push({id: dept[i].id, name: dept[i].name, count: 0});
     		  }
+    		  
+    		  axios.get("<%=request.getContextPath()%>/rest/tableprototype/count").then(function (response) {
+    			  var dc = response.data;
+    			  console.log(dc);
+    			  for (var n = 0; n < dc.data.length; ++n) {
+    				  for (var i = 0; i < vm.deptInfos.length; ++i) {
+            			  if (vm.deptInfos[i].id == dc.data[n]._dept_id) {
+            				  vm.deptInfos[i].count = dc.data[n]._count;
+            			  }
+            		  }
+    			  }
+    			  console.log(vm.deptInfos);
+    		  });
     	  });
       },
       

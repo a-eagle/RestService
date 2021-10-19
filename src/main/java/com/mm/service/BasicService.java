@@ -37,6 +37,7 @@ public class BasicService {
 		
 		public ServiceResult() {
 			status = "OK";
+			msg = "success";
 		}
 		
 		public ServiceResult(String code, String msg, Object data) {
