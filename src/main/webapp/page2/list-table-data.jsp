@@ -14,7 +14,7 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
   <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
   <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
-  <script src="../js/auth.js"></script>
+  <script src="../js/auth.js?v"></script>
    <script>
   
   	var tableName = '<%=request.getParameter("name")%>';

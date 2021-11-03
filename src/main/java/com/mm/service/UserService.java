@@ -154,7 +154,7 @@ public class UserService extends BasicService {
 			}
 		} catch(Exception ex) {
 			ex.printStackTrace();
-			sr.fail("Server occur exception");
+			sr.fail(ex.getMessage());
 		} finally {
 			if (session != null)
 				session.close();

@@ -11,7 +11,7 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
     <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
     <script type="text/javascript" src="http://unpkg.com/view-design/dist/iview.min.js"></script>
   <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
-  <script src="../js/auth.js"></script>
+  <script src="../js/auth.js?v"></script>
   <style>
 	.layout {
 	    border: 0px solid #d7dde4;
@@ -133,7 +133,7 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
     		  
     		  axios.get("<%=request.getContextPath()%>/rest/tableprototype/count").then(function (response) {
     			  var dc = response.data;
-    			  console.log(dc);
+    			  // console.log(dc);
     			  for (var n = 0; n < dc.data.length; ++n) {
     				  for (var i = 0; i < vm.deptInfos.length; ++i) {
             			  if (vm.deptInfos[i].id == dc.data[n]._dept_id) {
@@ -141,7 +141,7 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
             			  }
             		  }
     			  }
-    			  console.log(vm.deptInfos);
+    			  // console.log(vm.deptInfos);
     		  });
     	  });
       },

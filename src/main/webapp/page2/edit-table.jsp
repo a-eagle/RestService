@@ -8,7 +8,7 @@
   <script src="http://unpkg.com/view-design/dist/iview.min.js"></script>
   <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
   <script src="../js/md5.js"></script>
-  <script src="../js/auth.js"></script>
+  <script src="../js/auth.js?v"></script>
   <style>
   
   xbody::-webkit-scrollbar {
@@ -159,7 +159,7 @@
     	  
    		  axios.get(url).then(function (res) {
    			  var d = res.data.data;
-   			  console.log(d);
+   			  // console.log(d);
    			  for (var i = 0; i < d.length; ++i) {
    				  if (d[i]._type == 1) {
    					  vm.tabName = d[i]._name_cn;
@@ -314,7 +314,7 @@
     		  var url = "<%=request.getContextPath()%>/rest/tableprototype/column/" + this.delColInfo._id;
     		  axios.delete(url).then(function(res) {
     			  var d = res.data;
-    			  console.log(d);
+    			  // console.log(d);
     			  vm.modal_loading = false;
     			  vm.showDeleteDialog = false;
     			  if (d.status == 'OK') {
@@ -336,12 +336,12 @@
 	    	  }
 	    	  var vm = this;
 	    	  this.updateTableColToServer(param, function(ok) {
-	    		  vm.curEidtRowIdx = -1;
-	        	  vm.curEidtRowData = null;
 	        	  if (ok) {
-	        		  vm.alreadyCreateColumns[idx]._name_cn = param._name_cn;
-	        		  vm.alreadyCreateColumns[idx]._max_len = param._max_len;
+	        		  vm.alreadyCreateColumns[idx]._name_cn = vm.curEidtRowData._name_cn;
+	        		  vm.alreadyCreateColumns[idx]._max_len = vm.curEidtRowData._max_len;
 	        	  }
+	        	  vm.curEidtRowIdx = -1;
+	        	  vm.curEidtRowData = null;
 	    	  });
 	      }
       },

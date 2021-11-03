@@ -10,7 +10,7 @@
   <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
   <script type="text/javascript" src="http://unpkg.com/view-design/dist/iview.min.js"></script>
   <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
-  <script src="../js/auth.js"></script>
+  <script src="../js/auth.js?v"></script>
    <script>
   
   	var deptId = '<%=request.getParameter("deptId")%>';
