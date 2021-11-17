@@ -59,4 +59,5 @@
 		select _dept_id, count(*) _count from  _table_prototype where _type = 1 group by _dept_id
     </select>
     
+    
 </mapper>

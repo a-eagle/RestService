@@ -198,4 +198,27 @@ public class TableService extends BasicService {
 		
 		return sr;
 	}
+	
+	@GET
+	@Path("/count")
+	@Produces(MediaType.APPLICATION_JSON)
+	public ServiceResult countOfTable(@PathParam("table-name") String tableName) {
+		SqlSession session = null;
+		ServiceResult sr = new ServiceResult();
+		try {
+			session  = MyBatis.getSession();
+			Object data = session.selectOne("com.mm.mybatis.Table.countByTable", tableName);
+			session.commit();
+			sr.setSimpleData(data);
+		} catch(Exception ex) {
+			session.rollback();
+			ex.printStackTrace();
+			sr.fail(ex.getMessage());
+		} finally {
+			if (session != null)
+				session.close();
+		}
+		
+		return sr;
+	}
 }

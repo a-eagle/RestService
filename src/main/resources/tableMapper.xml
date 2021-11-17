@@ -24,4 +24,8 @@
   		</foreach>
     </insert>
     
+    <select id="countByTable"  resultType="map" parameterType="string">
+		select count(*) _count, #{_parameter} as _name from  ${_parameter}
+    </select>
+    
 </mapper>

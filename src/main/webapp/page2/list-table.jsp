@@ -43,6 +43,15 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
 
  
   <script>
+  	function loadTableCount(item) {
+  		var target = item;
+  		url = '<%=request.getContextPath()%>/rest/api/' + item._name + '/count';
+		 axios.get(url).then(function (res) {
+			 var d = res.data.data;
+			 target._count = d._count;
+		 });
+  	}
+  
     var vm = new Vue({
       el: '#app',
       data : {
@@ -52,6 +61,7 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
     		  {title: 'ID', key:'_id' , sortable: true, width:80},  
     		  {title: '表中文名', key:'_name_cn' , sortable: true},
     		  {title: '表英文名(MD5)', key:'_name' , sortable: true},
+    		  {title: '数据量', key: '_count'},
     		  {title: 'Actions', slot:'actions', width:150 }
     	  ],
     	  tableDatas: [],
@@ -64,8 +74,11 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
    			  var d = res.data.data;
    			  //console.log(res);
    			  for (var i = 0; d && i < d.length; ++i) {
-       			  vm.tableDatas.push({_id: d[i]._id, _name: d[i]._name, _name_cn: d[i]._name_cn, idx: i + 1});
+       			  vm.tableDatas.push({_id: d[i]._id, _name: d[i]._name, _name_cn: d[i]._name_cn, idx: i + 1, _count: ''});
        		  }
+   			  for (var i = 0; i < vm.tableDatas.length; ++i) {
+   				  loadTableCount(vm.tableDatas[i]);
+    		  }
        	  });
       },
       

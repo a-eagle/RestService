@@ -83,7 +83,8 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
    			  var headers = res.data.headers;
    			  var d = res.data.data;
    			  console.log(res.data);
-   			  for (var i = 0; i < headers.length; ++i) {
+   			  // only show max 12 columns
+   			  for (var i = 0; i < headers.length && i < 12; ++i) {
      			  vm.tableHeaders.push({text: headers[i].text, value: headers[i].name});
      		  }
    			  for (var i = 0; i < d.length; ++i) {
