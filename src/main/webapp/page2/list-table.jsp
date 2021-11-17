@@ -6,13 +6,10 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
 <!DOCTYPE html>
 <html>
 <head>
-  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
-
-  <link rel="stylesheet" type="text/css" href="http://unpkg.com/view-design/dist/styles/iview.css">
-  <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
-  <script src="http://unpkg.com/view-design/dist/iview.min.js"></script>
-  <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="../iview/styles/iview.css">
+	<script src="../js/vue.js"></script>
+	<script src="../js/axios.min.js"></script>
+	<script src="../iview/iview.min.js"></script>
   <script src="../js/auth.js?v"></script>
    <script>
   
@@ -61,7 +58,7 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
     		  {title: 'ID', key:'_id' , sortable: true, width:80},  
     		  {title: '表中文名', key:'_name_cn' , sortable: true},
     		  {title: '表英文名(MD5)', key:'_name' , sortable: true},
-    		  {title: '数据量', key: '_count'},
+    		  {title: '数据量', key: '_count', sortable: true},
     		  {title: 'Actions', slot:'actions', width:150 }
     	  ],
     	  tableDatas: [],

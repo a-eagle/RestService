@@ -6,10 +6,10 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
 <!DOCTYPE html>
 <html>
 <head>
-  <link rel="stylesheet" type="text/css" href="http://unpkg.com/view-design/dist/styles/iview.css">
-  <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
-  <script src="http://unpkg.com/view-design/dist/iview.min.js"></script>
-  <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="../iview/styles/iview.css">
+	<script src="../js/vue.js"></script>
+	<script src="../js/axios.min.js"></script>
+	<script src="../iview/iview.min.js"></script>
   <script src="../js/xlsx.full.min.js"></script>
   <script src="../js/auth.js"></script>
    <script>
