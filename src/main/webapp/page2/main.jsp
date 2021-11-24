@@ -86,6 +86,11 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
 	                <Icon type="ios-navigate"></Icon>
 	                <a href = "login.jsp"> Login </a>
 	            </Menu-Item>
+	            
+	            <Menu-Item name="1">
+	                <Icon type="ios-navigate"></Icon>
+	                <a href = "manager.jsp" target='main-iframe'> Manager </a>
+	            </Menu-Item>
             </div>
     	</i-Menu>
     </div>
@@ -100,7 +105,7 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
         	</i-Menu>
         </div>
         
-        <iframe id='main-iframe' src=''> </iframe>
+        <iframe id='main-iframe' name='main-iframe' src=''> </iframe>
         
     </div>
     
