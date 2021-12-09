@@ -75,10 +75,32 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
 
  
   <script>
+  
+//colStr is A - ZZ
+  function nextExcelColString(colStr) {
+	 var r = '';
+	 var jw = false;
+	 var len = colStr.length;
+	 var last = colStr.charCodeAt(len - 1) + 1;
+ 		 if (last > 90) {
+ 			 last = last - 90 + 64;
+ 			 jw = true;
+ 		 }
+ 		 r = String.fromCharCode(last);
+ 		 if (jw || len == 2) {
+ 			 var cc = (len == 2 ? colStr.charCodeAt(len - 2) : 64);
+ 			 if (jw) cc += 1;
+ 			 if (cc >= 65) {
+ 				 r = String.fromCharCode(cc) + r;
+ 			 }
+ 		 }
+ 		 return r;
+  }
+  
     var vm = new Vue({
       el: '#app',
       data : {
-    	  tableHeaders: [{title: '#', key:'IDX' }],
+    	  tableHeaders: [{title: '#', key:'IDX', fixed: 'left', maxWidth: 100,}],
     	  tableHeadersProto: [],
     	  tableDatas: [],
     	  
@@ -104,7 +126,14 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
    				 if (d[i]._type != 2) {
    					 continue;
    				 }
-   				vm.tableHeaders.push({title: d[i]._name_cn, key: d[i]._name});
+   				vm.tableHeaders.push({title: d[i]._name_cn, key: d[i]._name, render: (h, params) => {
+   						var txt = params.row[params.column.key];
+   						if (txt && txt.length > 30) {
+   							txt = txt.substring(0, 30) + '...(' +  txt.length + ')';
+   						}
+	   					return h('span', txt);
+	   				}
+   				});
    				vm.tableHeadersProto.push(d[i]);
    				
    				var vs = {_name_cn: d[i]._name_cn, _name: d[i]._name};
@@ -137,12 +166,64 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
 			  }
     	  },
     	  
-		  parseWorkbook: function(workbook) {
+    	  parseWorkbook: function(workbook) {
+    		  var worksheet = workbook.Sheets[workbook.SheetNames[0]];
+			  console.log(worksheet);
+			  
+			  var range = worksheet['!ref'];
+			  if (! range || range.indexOf(':') < 0)
+				  return;
+			  var startCol = '', endCol = '', startRow = 0, endRow = 0;
+			  startCol = range.match(/[A-Z]+/g)[0]; // A - ZZ
+			  endCol = range.match(/[A-Z]+/g)[1];
+			  startRow = parseInt(range.match(/[0-9]+/g)[0]);
+			  endRow = parseInt(range.match(/[0-9]+/g)[1]);
+			  console.log('start-end col row:', startCol, endCol, startRow, endRow);
+			  
+			  // build headers map  --> { col-_name: col-head, ...}
+			  var headerMap = {};
+			  for (var i = 0; i < this.tableHeadersProto.length; ++i) {
+				  var c = this.tableHeadersProto[i];
+				  // 不超过100列
+				  for (var hc = startCol, j = 0; j <= 100; hc = nextExcelColString(hc), ++j) {
+					  var t = hc + this.headerLineNo;
+					  var tv = worksheet[t];
+					  if (tv && String(tv.v).trim() == c._name_cn.trim()) {
+						  headerMap[c._name] = hc;
+					  }
+					  if (hc == endCol) {
+						  break;
+					  }
+				  }
+			  }
+			  console.log('headerMap = ', headerMap);
+			  
+			// build data
+			 for (var i = this.headerLineNo + 1, j = 1; i <= endRow; ++i, ++j) {
+				  var item = {IDX: j};
+				  var isAllEmpty = true;
+				  for (h in headerMap) {
+					  var d = worksheet[headerMap[h] + i];
+					  // console.log(h, d);
+					  if (! d) {
+						  continue;
+					  }
+					  item[h] = d.w;
+					  if (d.w) isAllEmpty = false;
+				  }
+				  if (isAllEmpty) {
+				  	  break;
+				  }
+				  this.tableDatas.push(item);
+			  }
+    	  },
+    	  
+		  parseWorkbook_old: function(workbook) {
 			  var worksheet = workbook.Sheets[workbook.SheetNames[0]];
 			  console.log(worksheet);
 			  // remove !merges
 			  if (worksheet['!merges']) {
-				  worksheet['!merges'].length = 0;  
+				  worksheet['!merges'].length = 0;
 			  }
 			  // delete before table header rows
 			  this.headerLineNo = parseInt('' + this.headerLineNo);
@@ -179,7 +260,14 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
 				  var rowData = json[i];
 				  for (var j = 0; j < headerMap.length; ++j) {
 					  var h = headerMap[j];
-					  item[h.key] = rowData[h.value];
+					  var v = rowData[h.value];
+					  if (v) {
+						  v = '' + v;
+						  if (v.length >= 30) {
+							  v = v.substring(0, 30) + '...(' + v.length + ')'; 
+						  }
+					  }
+					  item[h.key] = v;
 				  }
 				  this.tableDatas.push(item);
 			  }
