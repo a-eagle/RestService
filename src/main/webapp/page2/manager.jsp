@@ -21,6 +21,7 @@
 <div id="app">
 
 <i-input placeholder="Input sql..." v-model.trim = 'sql' type="textarea" style=' width: 80%;' :rows="5" >  </i-input>  
+<i-button @click="updateTableStatistics"> Update Table Statistics </i-button>
 <br/>
 <i-button block @click="executeSql" > Execute  </i-button>
 
@@ -66,7 +67,7 @@
     		  axios.post(url, {sql: this.sql}).then(function(res) {
     			  var d = res.data;
     			  var dd = d.data;
-    			  console.log(dd)
+    			  console.log(dd);
     			  if (d.status == 'OK') {
     				  vm.colsInfo.push({title:'#', key:'__idx__'});
     				  for (var i = 0; i < dd.heads.length; ++i) {
@@ -83,6 +84,19 @@
     			  vm.$Message.error({content: 'Fail: '+ error, background: true, duration: 10});
     		  });
     	  },
+    	  
+    	  updateTableStatistics: function() {
+    		  var vm = this;
+    		  var url = "<%=request.getContextPath()%>/rest/manager/TableStatistics/update";
+    		  axios.get(url).then(function(res) {
+    			  var d = res.data;
+    			  if (d.status == 'OK') {
+    				  vm.$Message.success({content: 'Success: '+ d.data, background: true, duration: 10});  
+    			  } else {
+    				  vm.$Message.error({content: 'Fail: '+ d.msg, background: true, duration: 10});
+    			  }
+    		  });
+    	  }
       },
       watch: {
       }

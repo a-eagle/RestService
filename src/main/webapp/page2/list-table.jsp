@@ -40,12 +40,22 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
 
  
   <script>
-  	function loadTableCount(item) {
-  		var target = item;
-  		url = '<%=request.getContextPath()%>/rest/api/' + item._name + '/count';
+  	function loadTableCount(datas) {
+  		url = '<%=request.getContextPath()%>/rest/manager/TableStatistics/findAll';
 		 axios.get(url).then(function (res) {
 			 var d = res.data.data;
-			 target._count = d._count;
+			 var hs = {};
+			 console.log('loadTableCount', d);
+			 for (let i = 0; i < d.length; ++i) {
+				 hs[d[i].tableName] = d[i];
+			 }
+			 for (let i = 0; i < datas.length; ++i) {
+				 let c = datas[i];
+				 if (hs[c._name])
+				 	c._count = hs[c._name].dataCount;
+				 else 
+					c._count = 'unknow';
+			 }
 		 });
   	}
   
@@ -55,7 +65,7 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
     	  tableHeight: 600,
     	  
     	  tableHeaders: [{title: '#', key:'idx', sortable: true, width:80 },
-    		  {title: 'ID', key:'_id' , sortable: true, width:80},  
+    		  {title: 'ID', key:'_id' , sortable: true, width:80},
     		  {title: '表中文名', key:'_name_cn' , sortable: true},
     		  {title: '表英文名(MD5)', key:'_name' , sortable: true},
     		  {title: '数据量', key: '_count', sortable: true},
@@ -73,9 +83,7 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
    			  for (var i = 0; d && i < d.length; ++i) {
        			  vm.tableDatas.push({_id: d[i]._id, _name: d[i]._name, _name_cn: d[i]._name_cn, idx: i + 1, _count: ''});
        		  }
-   			  for (var i = 0; i < vm.tableDatas.length; ++i) {
-   				  loadTableCount(vm.tableDatas[i]);
-    		  }
+   		      loadTableCount(vm.tableDatas);
        	  });
       },
       

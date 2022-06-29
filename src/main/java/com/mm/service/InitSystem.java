@@ -4,6 +4,7 @@ import java.sql.SQLException;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
@@ -17,24 +18,33 @@ public class InitSystem {
 	
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
-	public String get() {
-		boolean ok = initSystem();
-		return "init system " + (ok ? "success" : "fail") + "; " + msg;
+	@Path("/{ver}")
+	public String get(@PathParam("ver") String ver) {
+		try {
+			int v = Integer.parseInt(ver);
+			boolean ok = initSystem(v);
+			return "R: init system "  + ver + (ok ? " success" : " fail") + "; " + msg;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return "E: init system "  + ver + " fail" + "; " + ex.getMessage();
+		}
 	}
 	
-	private boolean initSystem() {
+	private boolean initSystem(int ver) {
 		SqlSession s = MyBatis.getSession();
 		java.sql.Connection c = s.getConnection();
 		
-		int version = 0;
+		boolean ok = false;
+		if (ver == 1) {
+			ok = version_1(s, c);
+		}
 		
-		if (version == 0 && version_1(s, c)) {
-			version = 1;
+		if (ver == 2) {
+			ok = version_2(s, c);
 		}
 		
 		s.close();
-		
-		return version == 1;
+		return ok;
 	}
 	
 	private boolean version_1(SqlSession s, java.sql.Connection c) {
@@ -98,6 +108,18 @@ public class InitSystem {
 			c.createStatement().execute("insert into _department (_name) values ('ÆøÏó¾Ö')");
 			
 			s.commit();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			s.rollback();
+			msg = e.getMessage();
+		}
+		return false;
+	}
+	
+	private boolean version_2(SqlSession s, java.sql.Connection c) {
+		try {
+			c.createStatement().execute("create table _table_statistics (_id integer PRIMARY KEY auto_increment, _table_name varchar(60),  _data_count integer )");
 			return true;
 		} catch (SQLException e) {
 			e.printStackTrace();

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        
+<mapper namespace="com.mm.mybatis.TableStatistics" >
+
+	<resultMap id="TableStatistics-ResultMap" type="com.mm.mybatis.TableStatistics">
+        <id column="_id" jdbcType="INTEGER" property="id" />
+        <result column="_table_name" jdbcType="VARCHAR" property="tableName" />
+        <result column="_data_count" jdbcType="INTEGER" property="dataCount" />
+    </resultMap>
+
+    <select id="findByName"  resultMap="TableStatistics-ResultMap">
+		select * from _table_statistics t where t._tableName = #{name}
+    </select>
+    
+    <select id="findAll"  resultMap="TableStatistics-ResultMap">
+		select * from _table_statistics
+    </select>
+    
+    <insert id="update" parameterType="com.mm.mybatis.TableStatistics">
+    	<choose>
+	    	<when test="id == 0" >
+	    		INSERT INTO _table_statistics (_table_name, _data_count) VALUES (#{tableName}, #{dataCount})
+	    	</when>
+	    	<otherwise>
+	    		update _table_statistics set _data_count = #{dataCount} where _id = #{id}
+	    	</otherwise>
+       </choose>
+    </insert>
+    
+    <delete id="delete" >
+        DELETE FROM _table_statistics 
+    </delete>
+    
+</mapper>
