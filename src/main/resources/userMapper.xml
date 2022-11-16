@@ -7,6 +7,7 @@
         <id column="_id" jdbcType="INTEGER" property="id" />
         <result column="_name" jdbcType="VARCHAR" property="name" />
         <result column="_password" jdbcType="VARCHAR" property="password" />
+        <result column="_dept" jdbcType="VARCHAR" property="dept" />
     </resultMap>
 
     <select id="findByName"  resultMap="User-ResultMap">
@@ -18,7 +19,7 @@
     </select>
     
     <insert id="insert" parameterType="com.mm.mybatis.User">
-       INSERT INTO _user (_name, _password) VALUES (#{name}, #{password})
+       INSERT INTO _user (_name, _password, _dept) VALUES (#{name}, #{password}, #{dept})
     </insert>
     
     <update id="updatePassword" parameterType="com.mm.mybatis.User">

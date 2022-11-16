@@ -13,11 +13,24 @@ public class BasicService {
 	@Context protected HttpServletRequest mRequest;
 	
 	public Auth.Token getRequestAuth() {
-		return (Token) mRequest.getAttribute("Auth.Token");
+		Token t = (Token) mRequest.getAttribute("Auth.Token");
+		if (t == null) {
+			t = (Token) mRequest.getSession().getAttribute("Auth.Token");
+		}
+		return t;
 	}
 	
 	public void setRequestAuth(Auth.Token token) {
 		mRequest.setAttribute("Auth.Token", token);
+		mRequest.getSession(true).setAttribute("Auth.Token", token);
+	}
+	
+	public String getUserName() {
+		Auth.Token t = getRequestAuth();
+		if (t != null) {
+			return t.userName;
+		}
+		return null;
 	}
 	
 	public boolean isUserCertified() {

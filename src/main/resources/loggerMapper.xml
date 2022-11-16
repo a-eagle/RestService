@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        
+<mapper namespace="com.mm.mybatis.Logger" >
+
+	<resultMap id="Logger-ResultMap" type="com.mm.mybatis.Logger">
+        <id column="_id" jdbcType="INTEGER" property="id" />
+        <result column="_time" jdbcType="VARCHAR" property="time" />
+        <result column="_usrName" jdbcType="VARCHAR" property="usrName" />
+        <result column="_operation" jdbcType="VARCHAR" property="operation" />
+    </resultMap>
+
+    <select id="findAll"  resultMap="Logger-ResultMap">
+		select * from _Logger
+    </select>
+    
+    <insert id="insert" parameterType="com.mm.mybatis.Logger">
+       INSERT INTO _Logger (_time, _usrName, _operation) VALUES (#{time}, #{userName}, #{operation})
+    </insert>
+   
+    
+    <delete id="delete" >
+        DELETE FROM _Logger  WHERE _id in 
+        <foreach item="id" collection="array" open="(" close=")" separator=",">
+        	#{id}
+        </foreach>
+    </delete>
+    
+</mapper>

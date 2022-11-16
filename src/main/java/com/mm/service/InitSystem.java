@@ -107,6 +107,9 @@ public class InitSystem {
 			c.createStatement().execute("insert into _department (_name) values ('税务局')");
 			c.createStatement().execute("insert into _department (_name) values ('气象局')");
 			
+			c.createStatement().execute("create table _logger (_id integer PRIMARY KEY auto_increment, _time varchar(60),  _usrName varchar(60),  _operation varchar(255) )");
+			
+			
 			s.commit();
 			return true;
 		} catch (SQLException e) {

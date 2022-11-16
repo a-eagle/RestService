@@ -25,6 +25,7 @@
         <mapper resource="tablePrototypeMapper.xml"/>
         <mapper resource="tableMapper.xml"/>
         <mapper resource="tableStatistics.xml"/>
+        <mapper resource="loggerMapper.xml"/>
     </mappers>
  
 </configuration>

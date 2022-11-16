@@ -14,8 +14,8 @@ public class Auth {
 	private static final byte[] KEY = "auth-x-key-token-restservice".getBytes();
 	
 	public static class Token {
-		String userName;
-		long time;
+		public String userName;
+		public long time;
 		
 		public boolean isValid() {
 			if (userName == null || userName.length() == 0) {
@@ -29,6 +29,10 @@ public class Auth {
 		
 		public boolean isPublicUser() {
 			return "public".equals(userName);
+		}
+		
+		public String toString() {
+			return "userName=" + userName + ", time=" + time;
 		}
 	}
 	

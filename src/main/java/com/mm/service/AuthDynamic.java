@@ -13,6 +13,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.GET;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
@@ -27,7 +28,7 @@ import javax.ws.rs.ext.Provider;
 
 import com.mm.mybatis.User;
 
-// No use this filter
+//  use this filter
 @Provider
 public class AuthDynamic implements DynamicFeature {
 
@@ -64,7 +65,15 @@ public class AuthDynamic implements DynamicFeature {
 				Response r = Response.status(Response.Status.OK).entity(sr).build();
 				requestContext.abortWith(r);
 			} else {
-				mReq.setAttribute("Auth.Token", auth);
+				//mReq.setAttribute("Auth.Token", auth);
+				HttpSession ss = mReq.getSession(true);
+				if (ss.getAttribute("user") == null) {
+					ss.setAttribute("Auth.Token", auth);
+					ss.setAttribute("userName", auth.userName);
+					User u = UserService.findUser(auth.userName);
+					ss.setAttribute("user", u);
+				}
+				// System.out.println(auth);
 			}
 		}
 

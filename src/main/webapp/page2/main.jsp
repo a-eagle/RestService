@@ -1,3 +1,4 @@
+<%@page import="com.mm.service.Auth"%>
 <%@page import="com.mm.mybatis.User"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <% 
@@ -80,17 +81,31 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
     <div class="header" >
     	<i-Menu mode="horizontal" theme="dark" >
     		<div class="layout-logo"></div>
-    		<div class='head-title'> 政务数据共享平台</div>
+    		<div class='head-title'> 政务数据共享服务平台</div>
     		<div class="layout-nav">
+    		<%
+    			String userName = (String)session.getAttribute("userName");
+    		    if (userName == null) {
+    		%>
 	    		<Menu-Item name="1">
 	                <Icon type="ios-navigate"></Icon>
 	                <a href = "login.jsp"> Login </a>
 	            </Menu-Item>
+	            <% } %>
 	            
 	            <Menu-Item name="1">
 	                <Icon type="ios-navigate"></Icon>
 	                <a href = "manager.jsp" target='main-iframe'> Manager </a>
 	            </Menu-Item>
+	            
+	            <% 
+	               if ("admin".equals(userName)) {
+	            %>
+	            <Menu-Item name="1">
+	                <Icon type="ios-navigate"></Icon>
+	                <a href = "list-user.jsp" target='main-iframe'> User </a>
+	            </Menu-Item>
+	            <% } %>
             </div>
     	</i-Menu>
     </div>
