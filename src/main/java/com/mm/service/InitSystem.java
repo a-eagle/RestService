@@ -18,38 +18,27 @@ public class InitSystem {
 	
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
-	@Path("/{ver}")
-	public String get(@PathParam("ver") String ver) {
+	public String get() {
 		try {
-			int v = Integer.parseInt(ver);
-			boolean ok = initSystem(v);
-			return "R: init system "  + ver + (ok ? " success" : " fail") + "; " + msg;
+			boolean ok = initSystem();
+			return "R: init system " + (ok ? " success" : " fail") + "; " + msg;
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			return "E: init system "  + ver + " fail" + "; " + ex.getMessage();
+			return "E: init system "  + " fail" + "; " + ex.getMessage();
 		}
 	}
 	
-	private boolean initSystem(int ver) {
+	private boolean initSystem() {
 		SqlSession s = MyBatis.getSession();
 		java.sql.Connection c = s.getConnection();
-		
-		boolean ok = false;
-		if (ver == 1) {
-			ok = version_1(s, c);
-		}
-		
-		if (ver == 2) {
-			ok = version_2(s, c);
-		}
-		
+		boolean ok = version_1(s, c);
 		s.close();
 		return ok;
 	}
 	
 	private boolean version_1(SqlSession s, java.sql.Connection c) {
 		try {
-			c.createStatement().execute("create table _user (_id integer PRIMARY KEY auto_increment, _name varchar(60),  _password varchar(60) )");
+			c.createStatement().execute("create table _user (_id integer PRIMARY KEY auto_increment, _name varchar(60),  _password varchar(60), _dept varchar(120) )");
 			
 			// _type 用于区分部门，或主题，暂时不使用，默认0表示部门
 			c.createStatement().execute("create table _department (_id integer PRIMARY KEY auto_increment, _name varchar(120), _parent_id integer default 0, _parent_name varchar(120),  _type integer default 0)");
@@ -108,21 +97,9 @@ public class InitSystem {
 			c.createStatement().execute("insert into _department (_name) values ('气象局')");
 			
 			c.createStatement().execute("create table _logger (_id integer PRIMARY KEY auto_increment, _time varchar(60),  _usrName varchar(60),  _operation varchar(255) )");
-			
+			c.createStatement().execute("create table _table_statistics (_id integer PRIMARY KEY auto_increment, _table_name varchar(60),  _data_count integer )");
 			
 			s.commit();
-			return true;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			s.rollback();
-			msg = e.getMessage();
-		}
-		return false;
-	}
-	
-	private boolean version_2(SqlSession s, java.sql.Connection c) {
-		try {
-			c.createStatement().execute("create table _table_statistics (_id integer PRIMARY KEY auto_increment, _table_name varchar(60),  _data_count integer )");
 			return true;
 		} catch (SQLException e) {
 			e.printStackTrace();

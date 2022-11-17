@@ -103,7 +103,9 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
    			  var d = res.data.data;
    			  //console.log(res);
    			  for (var i = 0; d && i < d.length; ++i) {
-       			  vm.tableDatas.push(d[i]);
+   				  var md = d[i];
+   				  md.idx = i + 1;
+       			  vm.tableDatas.push(md);
        		  }
        	  });
       },
@@ -113,12 +115,13 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
     		  this.curUser = item;
     		  this.curUserId = item.id;
     		  this.curUserPassword = item.password;
+    		  this.curUserName = item.name;
     		  this.editModalShow = true;
     	  },
     	  
     	  saveEditInfo: function() {
     		  var vm = this;
-    		  var param = {id: this.curUserId, password: this.curUserPassword};
+    		  var param = {id: this.curUserId, password: this.curUserPassword, userName: this.curUserName};
     	  	  	axios.put("<%=request.getContextPath()%>/rest/user", param).then(function (res) {
     	  		  var d = res.data;
     	  		  console.log(d);

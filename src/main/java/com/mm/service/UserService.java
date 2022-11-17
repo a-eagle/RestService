@@ -97,6 +97,7 @@ public class UserService extends BasicService {
 			String password = data.get("password");
 			String dept = data.get("dept");
 			int num = session.insert("com.mm.mybatis.User.insert", new User(name, password, dept));
+			saveLogger(session, "创建新用户' " + name + "'", false);
 			session.commit();
 			sr.setSimpleData(num);
 		} catch(Exception ex) {
@@ -124,13 +125,14 @@ public class UserService extends BasicService {
 			Map<String, String> data = m.readValue(json, jt);
 			String id = data.get("id");
 			String password = data.get("password");
+			String userName = data.get("userName");
 			User u = new User();
 			u.id = Integer.parseInt(id);
 			u.password = password;
 			int num = session.update("com.mm.mybatis.User.updatePassword", u);
+			saveLogger(session, "更新用户 '" + userName + "'  密码 ", false);
 			session.commit();
 			sr.setSimpleData(num);
-			
 		} catch(Exception ex) {
 			ex.printStackTrace();
 			sr.fail(ex.getMessage());
@@ -150,8 +152,10 @@ public class UserService extends BasicService {
 		ServiceResult sr = new ServiceResult();
 		try {
 			session  = MyBatis.getSession();
-			String[] ids = id.split(",");
+			User u = (User)session.selectOne("com.mm.mybatis.User.findById", id);
+			String[] ids = {id};
 			int num = session.delete("com.mm.mybatis.User.delete", ids);
+			saveLogger(session, "删除用户 '" + u.name + "'  ", false);
 			session.commit();
 			sr.setSimpleData(num);
 		} catch(Exception ex) {
@@ -179,7 +183,7 @@ public class UserService extends BasicService {
 			User nu = session.selectOne("com.mm.mybatis.User.findByName", data.name);
 			if (nu != null && data.password != null && nu.password != null && data.password.equals(nu.password)) {
 				sr.setSimpleData(Auth.buildAuthToken(data.name));
-				// setRequestUser(nu);
+				setRequestUser(nu);
 			} else {
 				sr.fail("User name or password wrong");
 			}

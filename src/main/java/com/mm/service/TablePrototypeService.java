@@ -92,6 +92,7 @@ public class TablePrototypeService extends BasicService {
 			for (TablePrototype d : data) {
 				if (d._type == TablePrototype.TYPE_TABLE) {
 					session.insert("com.mm.mybatis.TablePrototype.createTableStructure", d);
+					this.saveLogger(session, "创建新表 '" + d._name_cn + "'(" + d._name+")", false);
 					// System.out.println(d._name);
 				} else if (d._type == TablePrototype.TYPE_COLUMN) {
 					session.insert("com.mm.mybatis.TablePrototype.addColumn", d);
@@ -127,6 +128,8 @@ public class TablePrototypeService extends BasicService {
 			data.put("_id", id);
 			
 			int num = session.update("com.mm.mybatis.TablePrototype.update", data);
+			//String log = "修改表'" + data.get("_owner") + "'，更改列'" + data.get("_name_cn") + "'";
+			//this.saveLogger(session, log, false);
 			session.commit();
 			sr.setSimpleData(num);
 		} catch(Exception ex) {
@@ -150,6 +153,7 @@ public class TablePrototypeService extends BasicService {
 		try {
 			session  = MyBatis.getSession();
 			int num = session.delete("com.mm.mybatis.TablePrototype.delete", name);
+			this.saveLogger(session, "删除表'" + name + "'" , false);
 			session.commit();
 			sr.setSimpleData(num);
 			TablePrototypeManager.dirty(name);

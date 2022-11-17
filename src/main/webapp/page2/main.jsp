@@ -48,7 +48,7 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
 	    left: 20px;
 	}
 	.layout-nav {
-	    width: 220px;
+	    width: 420px;
 	    margin: 0 auto;
 	    margin-right: 20px;
 	}
@@ -84,27 +84,34 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
     		<div class='head-title'> 政务数据共享服务平台</div>
     		<div class="layout-nav">
     		<%
-    			String userName = (String)session.getAttribute("userName");
-    		    if (userName == null) {
+    			User u = (User)session.getAttribute("user");
+    		    if (u == null) {
     		%>
 	    		<Menu-Item name="1">
 	                <Icon type="ios-navigate"></Icon>
-	                <a href = "login.jsp"> Login </a>
+	                <a href = "login.jsp"> 登录 </a>
 	            </Menu-Item>
 	            <% } %>
 	            
-	            <Menu-Item name="1">
-	                <Icon type="ios-navigate"></Icon>
-	                <a href = "manager.jsp" target='main-iframe'> Manager </a>
-	            </Menu-Item>
-	            
-	            <% 
-	               if ("admin".equals(userName)) {
+	             <% 
+	              if (u != null && "admin".equals(u.name)) {
 	            %>
 	            <Menu-Item name="1">
 	                <Icon type="ios-navigate"></Icon>
-	                <a href = "list-user.jsp" target='main-iframe'> User </a>
+	                <a href = "manager.jsp" target='main-iframe'> 控制台 </a>
 	            </Menu-Item>
+	            
+	           
+	            <Menu-Item name="1">
+	                <Icon type="ios-navigate"></Icon>
+	                <a href = "list-user.jsp" target='main-iframe'> 用户管理 </a>
+	            </Menu-Item>
+	            
+	            <Menu-Item name="1">
+	                <Icon type="ios-navigate"></Icon>
+	                <a href = "logger.jsp" target='main-iframe'> 日志 </a>
+	            </Menu-Item>
+	            
 	            <% } %>
             </div>
     	</i-Menu>
@@ -154,7 +161,15 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
     		  var dept = d.data;
     		  // console.log(dept);
     		  for (var i = 0; i < dept.length; ++i) {
-    			  vm.deptInfos.push({id: dept[i].id, name: dept[i].name, count: 0});
+    			  <% if (u != null) {
+    				  out.write("var un = " + (u.name.equals("admin")) + ";\n");
+    				  out.write("var ud = '" + u.dept + "';\n");
+    			  	 }
+    			  %>
+    			  if (un || dept[i].name == ud) {
+    				  vm.deptInfos.push({id: dept[i].id, name: dept[i].name, count: 0});
+    			  }
+    			  
     		  }
     		  
     		  axios.get("<%=request.getContextPath()%>/rest/tableprototype/count").then(function (response) {

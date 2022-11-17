@@ -67,9 +67,9 @@ public class AuthDynamic implements DynamicFeature {
 			} else {
 				//mReq.setAttribute("Auth.Token", auth);
 				HttpSession ss = mReq.getSession(true);
+				ss.setAttribute("Auth.Token", auth);
+				ss.setAttribute("userName", auth.userName);
 				if (ss.getAttribute("user") == null) {
-					ss.setAttribute("Auth.Token", auth);
-					ss.setAttribute("userName", auth.userName);
 					User u = UserService.findUser(auth.userName);
 					ss.setAttribute("user", u);
 				}

@@ -6,6 +6,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.core.Context;
 
+import org.apache.ibatis.session.SqlSession;
+
 import com.mm.mybatis.User;
 import com.mm.service.Auth.Token;
 
@@ -25,12 +27,20 @@ public class BasicService {
 		mRequest.getSession(true).setAttribute("Auth.Token", token);
 	}
 	
-	public String getUserName() {
-		Auth.Token t = getRequestAuth();
-		if (t != null) {
-			return t.userName;
+	public void setRequestUser(User u) {
+		mRequest.getSession(true).setAttribute("user", u);
+	}
+	
+	public User getUser() {
+		return (User)mRequest.getSession().getAttribute("user");
+	}
+	
+	public boolean saveLogger(SqlSession session, String operation, boolean commit) {
+		User u = getUser();
+		if (u != null) {
+			return LoggerService.save(session, u.name, operation, commit);
 		}
-		return null;
+		return false;
 	}
 	
 	public boolean isUserCertified() {

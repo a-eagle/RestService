@@ -180,7 +180,8 @@ public class TableService extends BasicService {
 				session.insert("com.mm.mybatis.Table.insert", param);
 				num += 1;
 			}
-			
+
+			saveLogger(session, "在表 '" + tableName + "' 中新增" + num + "条数据", false);
 			session.commit();
 			sr.setSimpleData(num);
 		} catch(Exception ex) {

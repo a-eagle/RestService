@@ -22,6 +22,10 @@
 
 <i-input placeholder="Input sql..." v-model.trim = 'sql' type="textarea" style=' width: 80%;' :rows="5" >  </i-input>  
 <i-button @click="updateTableStatistics"> Update Table Statistics </i-button>
+<!-- 
+<i-button @click="userManager"> User Manager </i-button>
+<i-button @click="logger"> Logger  </i-button>
+ -->
 <br/>
 <i-button block @click="executeSql" > Execute  </i-button>
 
@@ -54,6 +58,12 @@
       },
       
       methods : {
+    	  userManager: function() {
+    		  
+    	  },
+    	  logger: function() {
+    		  
+    	  },
     	  rest: function() {
     		  this.sqlDatas = [];
     		  this.sql = '';

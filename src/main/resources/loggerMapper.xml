@@ -6,21 +6,21 @@
 	<resultMap id="Logger-ResultMap" type="com.mm.mybatis.Logger">
         <id column="_id" jdbcType="INTEGER" property="id" />
         <result column="_time" jdbcType="VARCHAR" property="time" />
-        <result column="_usrName" jdbcType="VARCHAR" property="usrName" />
+         <result column="_usrName" jdbcType="VARCHAR" property="userName" />
         <result column="_operation" jdbcType="VARCHAR" property="operation" />
     </resultMap>
 
     <select id="findAll"  resultMap="Logger-ResultMap">
-		select * from _Logger
+		select * from _logger
     </select>
     
     <insert id="insert" parameterType="com.mm.mybatis.Logger">
-       INSERT INTO _Logger (_time, _usrName, _operation) VALUES (#{time}, #{userName}, #{operation})
+       INSERT INTO _logger (_time, _usrName, _operation) VALUES (#{time}, #{userName}, #{operation})
     </insert>
    
     
     <delete id="delete" >
-        DELETE FROM _Logger  WHERE _id in 
+        DELETE FROM _logger  WHERE _id in 
         <foreach item="id" collection="array" open="(" close=")" separator=",">
         	#{id}
         </foreach>

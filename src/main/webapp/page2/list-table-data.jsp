@@ -6,14 +6,10 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
 <!DOCTYPE html>
 <html>
 <head>
-  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
-  
-  <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
-  <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="../iview/styles/iview.css">
+	<script src="../js/vue.js"></script>
+	<script src="../js/axios.min.js"></script>
+	<script src="../iview/iview.min.js"></script>
   <script src="../js/auth.js?v"></script>
    <script>
   
@@ -29,49 +25,32 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
 </head>
 <body style="width:100%; height:100%;">
 <div id="app" style="width:100%; height:100%;">
-<v-app>
-  <!-- 根据应用组件来调整你的内容 -->
-  <v-main>
-    <!-- 给应用提供合适的间距 -->
-   
-        <v-data-table :headers="tableHeaders" :items="tableDatas" class="elevation-1" >
-        	<template v-slot:item.actions="{item}">
-		      <v-icon  class="mr-2" @click="editItem(item)" >
-		        mdi-pencil
-		      </v-icon>
-		      <!-- 
-		      <v-icon small @click="deleteItem(item)" >
-		        mdi-delete
-		      </v-icon>
-		       -->
-		    </template>
-        </v-data-table>
-  </v-main>
+	<i-table :height="tableHeight" :columns="tableHeaders" :data="tableDatas" >
+     	<template slot-scope="{ row, index }" slot="actions">
+            <Icon type="md-build" size="20" @click="editItem(row)"> </Icon> &nbsp;
+        </template>
+     </i-table>
+
 	
-	<v-dialog v-model="editDialogShow" max-width="90%">
-		<v-card>
-			<v-card-title> {{editDialog._name_cn}} </v-card-title>
-		</v-card>
-		<v-data-table :headers="editDialog.headers" :items="editDialog.datas" class="elevation-1" hide-default-footer >
-		</v-data-table>
-	</v-dialog>
+	<Modal model="editDialogShow" max-width="90%">
+		
+	</Modal>
 	
-</v-app>
 </div>
 
  
   <script>
     var vm = new Vue({
       el: '#app',
-      vuetify: new Vuetify(),
       data : {
-    	  tableHeaders: [{text: '#', value:'IDX' }],
+    	  tableHeight: 400,
+    	  tableHeaders: [{title: '#', key:'IDX' }],
     	  tableDatas: [],
     	  
     	  editDialogShow: false,
     	  editDialog: {_name_cn:'', _name:'', 
-    		  headers:[{text:'#', value:'idx'},{text:'ID', value:'_id'}, {text:'列中文名', value:'_name_cn'}, 
-    			  {text:'列英文名', value:'_name'}, {text:'数据类型', value:'_data_type'}, {text:'最大长度', value:'_max_len'}], 
+    		  headers:[{title:'#', value:'idx'},{title:'ID', value:'_id'}, {title:'列中文名', value:'_name_cn'}, 
+    			  {title:'列英文名', value:'_name'}, {title:'数据类型', value:'_data_type'}, {title:'最大长度', value:'_max_len'}], 
     		  datas: []},
       },
       
@@ -85,7 +64,7 @@ response.addCookie(new javax.servlet.http.Cookie("Secure", ""));
    			  console.log(res.data);
    			  // only show max 12 columns
    			  for (var i = 0; i < headers.length && i < 12; ++i) {
-     			  vm.tableHeaders.push({text: headers[i].text, value: headers[i].name});
+     			  vm.tableHeaders.push({title: headers[i].text, key: headers[i].name});
      		  }
    			  for (var i = 0; i < d.length; ++i) {
    				  d[i].IDX = i + 1;

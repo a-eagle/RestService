@@ -10,7 +10,7 @@ import org.apache.ibatis.session.SqlSession;
 import com.mm.mybatis.MyBatis;
 import com.mm.mybatis.Logger;
 
-@Path("/Logger")
+@Path("/logger")
 public class LoggerService extends BasicService {
 	
 	@GET
@@ -55,25 +55,23 @@ public class LoggerService extends BasicService {
 		return sr;
 	}
 	
-	public static boolean save(SqlSession session, String usrName, String operation) {
-		boolean st = false;
+	public static boolean save(SqlSession session, String usrName, String operation, boolean commit) {
 		try {
 			int num = session.insert("com.mm.mybatis.Logger.insert", new Logger(usrName, operation));
-			session.commit();
-			st = true;
+			if (commit) {
+				session.commit();
+			}
+			return true;
 		} catch(Exception ex) {
 			ex.printStackTrace();
-		} finally {
-			if (session != null)
-				session.close();
 		}
 		
-		return st;
+		return false;
 	}
 	
-	public static boolean save(String usrName, String operation) {
+	public static boolean save(String usrName, String operation, boolean commit) {
 		SqlSession session = MyBatis.getSession();
-		return save(session, usrName, operation);
+		return save(session, usrName, operation, commit);
 	}
 	
 	

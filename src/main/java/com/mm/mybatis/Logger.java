@@ -9,6 +9,9 @@ public class Logger {
 	public String userName;
 	public String operation;
 	
+	public Logger() {
+	}
+	
 	public Logger(String time, String userName, String operation) {
 		this.time = time;
 		this.userName = userName;
@@ -17,7 +20,7 @@ public class Logger {
 	
 	public Logger(String userName, String operation) {
 		Date date = new Date();
-		SimpleDateFormat dateFormat= new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+		SimpleDateFormat dateFormat= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		this.time = dateFormat.format(date);
 		this.userName = userName;
 		this.operation = operation;
